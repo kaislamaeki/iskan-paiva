@@ -77,4 +77,5 @@ Put the files in `assets/sounds/` and set the paths in `SOUNDS` in `js/config.js
   - `&debug=1` turns on debug view from the start.
   - `?scene=comic&panel=2`, `?scene=finale`, `?scene=victory` and `?scene=gameover` open a single screen.
   - `?level=1&bot=1&sim=600` lets a bot play the whole game instantly and writes the result to the page title. This is useful after changing difficulty settings.
+  - `?level=5&show=owl,snowhorse` places those obstacles on screen right away, to preview new or replaced obstacle images.
   - `?export=obstacles` redraws every obstacle from the built-in pixel art so they can be saved again as pngs. Only needed if the code art changes; your replaced pngs are not touched by it.

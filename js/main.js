@@ -588,6 +588,15 @@
     setupLevel(i);
     setState('play');
     if (dev('gate')) { G.score = G.levelStartScore + G.level.length; }
+    // ?show=owl,snowhorse places those obstacles on screen right away (preview images)
+    if (dev('show')) {
+      params.get('show').split(',').forEach((key, i) => {
+        const type = G.level.obstacles.find((ty) => ty.key === key);
+        if (!type) return;
+        const pl = Obstacles.place(type, G.level);
+        Obstacles.list.push({ type, x: 300 + i * 170, y: pl.y, w: type.w, h: pl.h, seed: 0 });
+      });
+    }
   } else if (dev('scene')) {
     const s = params.get('scene');
     G.comicSeen = true;

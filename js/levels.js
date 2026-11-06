@@ -39,7 +39,9 @@ const LEVELS = [
   {
     id: 'horse', player: 'horse', bg: 'horse', gate: 'pier',
     obstacles: [
-      { key: 'fence',     kind: 'low',  w: 36, h: 30, weight: 3 },
+      { key: 'fence',     kind: 'low',  w: 36, h: 30, weight: 2 },
+      { key: 'hay',       kind: 'low',  w: 28, h: 28, weight: 2 },
+      { key: 'trough',    kind: 'low',  w: 50, h: 20, weight: 2 },
       { key: 'lowglider', kind: 'high', w: 26, h: 20, weight: 2 },
     ],
   },
@@ -62,6 +64,8 @@ const LEVELS = [
       { key: 'snowbranch', kind: 'high', w: 34, h: 20, weight: 1 },
       { key: 'liftchair',  kind: 'high', w: 30, h: 20, weight: 1 },
       { key: 'snowball',   kind: 'high', w: 18, h: 20, weight: 1 },
+      { key: 'snowhorse',  kind: 'low',  w: 30, h: 28, weight: 2 },
+      { key: 'owl',        kind: 'high', w: 34, h: 22, weight: 2 },
     ],
   },
   {
@@ -72,6 +76,8 @@ const LEVELS = [
       { key: 'sock',   kind: 'high', w: 20, h: 20, weight: 1 },
       { key: 'beanie', kind: 'high', w: 22, h: 18, weight: 1 },
       { key: 'gloves', kind: 'high', w: 26, h: 18, weight: 1 },
+      { key: 'yarnball',     kind: 'low',  w: 26, h: 22, weight: 2 },
+      { key: 'knittingsock', kind: 'high', w: 22, h: 20, weight: 1 },
     ],
   },
 ];

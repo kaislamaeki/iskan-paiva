@@ -575,6 +575,42 @@ const ART = (() => {
       r(-6, -10, 12, 1, 'rgba(255,255,255,0.35)'); r(-6, -6, 12, 1, 'rgba(255,255,255,0.35)');
       end();
     },
+    hay(ctx, o) {
+      // round hay bale, seen from the end (spiral), with straws sticking out
+      begin(ctx, o.x + o.w / 2, o.y + o.h);
+      const R = 5.5, rows = [];
+      for (let y = -11; y < 0; y++) {
+        const dy = y + 5.5;
+        const hw = Math.round(Math.sqrt(Math.max(0, R * R - dy * dy)) + 0.3);
+        rows.push([-hw, y, hw * 2, 1, '#e8c15a']);
+      }
+      outlined(rows, '#5a3e14');
+      for (let y = -11; y < 0; y++) {
+        const dy = y + 5.5;
+        const hw = Math.round(Math.sqrt(Math.max(0, R * R - dy * dy)) + 0.3);
+        r(hw - 2, y, 2, 1, '#d4a83e');                      // shading on the right
+      }
+      // spiral rings
+      for (const [x, y, w, h] of [[-3, -9, 6, 1], [-3, -2, 6, 1], [-4, -8, 1, 5], [3, -8, 1, 5],
+        [-1, -7, 3, 1], [-1, -4, 3, 1], [-2, -6, 1, 2], [1, -6, 1, 2]]) r(x, y, w, h, '#b8902e');
+      r(0, -6, 1, 1, '#b8902e');
+      // straws
+      r(-7, -8, 1, 1, '#f3d77a'); r(6, -5, 2, 1, '#f3d77a'); r(-2, -13, 1, 1, '#f3d77a'); r(3, -12, 1, 1, '#f3d77a');
+      end();
+    },
+    trough(ctx, o) {
+      // wooden water trough with metal bands
+      begin(ctx, o.x + o.w / 2, o.y + o.h);
+      outlined([
+        [-10, -8, 20, 6, '#8d5a3b'],                 // tub
+        [-9, -2, 2, 2, '#6d4c41'], [7, -2, 2, 2, '#6d4c41'],   // legs
+      ], '#2b1d12');
+      r(-10, -8, 20, 1, '#a86f45');
+      r(-9, -7, 18, 2, '#3d8fd1'); r(-8, -7, 6, 1, '#9fd3ff'); r(2, -7, 4, 1, '#9fd3ff');   // water
+      r(-10, -4, 20, 1, '#6d4c41');                  // plank line
+      r(-6, -8, 1, 6, '#9aa4ad'); r(5, -8, 1, 6, '#9aa4ad');   // metal bands
+      end();
+    },
     lowglider(ctx, o, t) {
       const cx = o.x + o.w / 2;
       const b = bob(t, o, 1, 3);
@@ -796,7 +832,8 @@ const ART = (() => {
       const w = img.width * s, h = m.h;
       const flying = o.type.kind === 'high' && o.type.key !== 'branch' && o.type.key !== 'snowbranch' && o.type.key !== 'liftchair';
       const b = flying ? Math.round(Math.sin(t * 6 + (o.seed || 0)) * 2) : 0;
-      ctx.imageSmoothingEnabled = s < 1;
+      // crisp when shrunk by a whole factor (pixel art drawn big, e.g. 12 px per pixel)
+      ctx.imageSmoothingEnabled = s < 1 && Math.abs(1 / s - Math.round(1 / s)) > 0.01;
       ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx - w / 2), Math.round(o.y + o.h + m.bottom - h + b), Math.round(w), Math.round(h));
       ctx.imageSmoothingEnabled = false;
       return;
