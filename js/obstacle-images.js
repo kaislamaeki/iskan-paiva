@@ -39,9 +39,8 @@ const OBSTACLE_IMAGES = {
   snowball:   { dx: 9, bottom: -1, h: 18, outline: true },
   owl:          { dx: 0, bottom: 1, h: 32 },
   books:      { dx: -1, bottom: 0, h: 30, outline: true },
-  robotvac:     { dx: 5, bottom: 3, h: 21 },
+  plant:        { dx: 0, bottom: 3, h: 63 },
   flyingbook:   { dx: 0, bottom: 0, h: 24 },
-  cat:          { dx: -4, bottom: -1, h: 30 },
   yarnball:     { dx: 4, bottom: 3, h: 32 },
   knittingsock: { dx: 0, bottom: 0, h: 36, outline: true },
 };

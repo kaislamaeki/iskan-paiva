@@ -78,9 +78,8 @@ const LEVELS = [
     id: 'home', player: 'home', bg: 'home', gate: 'backDoor',
     obstacles: [
       { key: 'books',  kind: 'low',  w: 26, h: 26 },
-      { key: 'robotvac',     kind: 'low',  w: 30, h: 16 },
+      { key: 'plant',        kind: 'low',  w: 26, h: 30 },
       { key: 'flyingbook',   kind: 'high', w: 30, h: 18 },
-      { key: 'cat',          kind: 'high', w: 34, h: 20 },
       { key: 'yarnball',     kind: 'low',  w: 26, h: 22 },
       { key: 'knittingsock', kind: 'high', w: 22, h: 20 },
     ],

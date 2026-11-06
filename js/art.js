@@ -710,32 +710,20 @@ const ART = (() => {
       r(-6, -4, 1, 1, '#f1c40f'); r(5, -4, 1, 1, '#f1c40f');           // gold corners
       end();
     },
-    cat(ctx, o, t) {
-      // ginger cat leaping off the shelf, stretched out mid-air
-      begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 1, 4));
-      const fur = '#e6913a', stripe = '#b8662a';
-      outlined([
-        [-5, -2, 9, 3, fur],                                            // body
-        [-8, -4, 4, 4, fur], [-8, -5, 1, 1, fur], [-5, -5, 1, 1, fur],  // head + ears
-        [-11, 0, 3, 1, fur], [-10, 1, 2, 1, fur],                       // front legs
-        [4, 0, 3, 1, fur], [5, 1, 3, 1, fur],                           // back legs
-        [4, -3, 1, 2, fur], [5, -5, 1, 2, fur], [6, -6, 2, 1, fur],     // tail
-      ], '#3a2210');
-      for (const x of [-3, 0, 3]) r(x, -2, 1, 2, stripe);
-      r(-7, -2, 2, 2, '#fff3e0');                                       // white muzzle
-      r(-7, -3, 1, 1, '#2b6b2b'); r(-5, -3, 1, 1, '#2b6b2b');           // green eyes
-      end();
-    },
-    robotvac(ctx, o) {
-      // robot vacuum cleaner on its rounds, with a little dust trail
+    plant(ctx, o) {
+      // monstera in a terracotta pot
       begin(ctx, o.x + o.w / 2, o.y + o.h);
+      const leaf = '#3f9a46', dark = '#2d7a36';
       outlined([
-        [-5, -5, 10, 1, '#3a3a44'], [-6, -4, 12, 3, '#2b2b33'],         // round body
-        [-6, -1, 12, 1, '#555b66'],                                     // bumper
-      ], '#111118');
-      r(-1, -5, 2, 1, '#4caf50');                                       // power light
-      r(-3, -3, 6, 1, '#454552');                                       // lid line
-      r(7, -1, 1, 1, '#c9b8a0'); r(9, -2, 1, 1, '#c9b8a0'); r(8, 0, 1, 1, '#c9b8a0'); // dust
+        [-4, -6, 8, 6, '#c0663d'], [-5, -7, 10, 2, '#d47a4f'],         // pot + rim
+        [-1, -10, 1, 3, dark], [2, -11, 1, 4, dark],                    // stems
+        [-7, -14, 6, 4, leaf], [-6, -15, 4, 1, leaf],                   // left leaf
+        [1, -16, 6, 5, leaf], [2, -17, 4, 1, leaf],                     // right leaf
+        [-3, -19, 5, 4, leaf],                                          // top leaf
+      ], '#1e3a22');
+      r(-5, -13, 1, 1, '#d8c8a0'); r(-3, -12, 1, 1, '#d8c8a0');         // monstera holes
+      r(3, -14, 1, 1, '#d8c8a0'); r(5, -13, 1, 1, '#d8c8a0'); r(-1, -17, 1, 1, '#d8c8a0');
+      r(-4, -3, 8, 1, '#a8552f');                                       // pot band
       end();
     },
     hay(ctx, o) {
