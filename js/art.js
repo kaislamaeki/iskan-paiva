@@ -671,21 +671,21 @@ const ART = (() => {
       end();
     },
     duck(ctx, o, t) {
-      // big mallard skimming over the water, wings up, dark outline (fills its hitbox)
+      // mallard skimming over the water, wings up, soft brown outline
       begin(ctx, o.x + o.w / 2, o.y + o.h + bob(t, o, 1, 5));
       outlined([
-        [-5, -6, 11, 5, '#d9d4c7'],                                   // body
-        [-7, -6, 3, 4, '#8b4513'],                                    // chestnut breast
-        [6, -7, 2, 3, '#2b2b2b'],                                     // tail
-        [-9, -10, 4, 4, '#2e9e5b'], [-8, -11, 3, 1, '#2e9e5b'],       // head
-        [-12, -9, 3, 2, '#f6b93b'],                                   // beak
-        [-1, -10, 6, 4, '#9a9488'], [0, -13, 5, 3, '#9a9488'], [2, -14, 3, 1, '#9a9488'], // raised wing
-      ], '#1b2430');
-      r(-7, -6, 3, 1, '#ffffff');                                     // white collar
-      r(-8, -9, 1, 1, '#111111'); r(-7, -10, 1, 1, '#1f7a43');        // eye + head shine
-      r(0, -7, 4, 1, '#3b5bdb');                                      // blue wing patch
-      r(-4, -2, 9, 1, '#c4beb1');                                     // belly
-      r(-6, 0, 3, 1, '#ffffff'); r(4, 0, 3, 1, '#ffffff');            // spray on the water
+        [-4, -4, 8, 3, '#d9d4c7'],                                    // body
+        [-5, -4, 2, 3, '#8b4513'],                                    // chestnut breast
+        [4, -5, 2, 2, '#2b2b2b'],                                     // tail
+        [-7, -7, 3, 3, '#2e9e5b'],                                    // head
+        [-9, -6, 2, 1, '#f6b93b'],                                    // beak
+        [-1, -7, 4, 3, '#9a9488'], [0, -9, 3, 2, '#9a9488'],          // raised wing
+      ], '#6b5a45');
+      r(-5, -4, 2, 1, '#ffffff');                                     // white collar
+      r(-6, -6, 1, 1, '#111111');                                     // eye
+      r(0, -5, 3, 1, '#3b5bdb');                                      // blue wing patch
+      r(-3, -2, 6, 1, '#c4beb1');                                     // belly
+      r(-4, 0, 2, 1, '#ffffff'); r(3, 0, 2, 1, '#ffffff');            // spray on the water
       end();
     },
     boat(ctx, o, t) {

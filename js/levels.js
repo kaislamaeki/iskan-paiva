@@ -51,7 +51,7 @@ const LEVELS = [
       { key: 'log',    kind: 'low',  w: 46, weight: 2 },
       { key: 'buoy',   kind: 'low',  w: 18, weight: 2 },
       { key: 'rock',   kind: 'low',  w: 38, weight: 2 },
-      { key: 'duck',   kind: 'high', w: 40, h: 30, bottom: 208, weight: 2 },
+      { key: 'duck',   kind: 'high', w: 32, h: 24, bottom: 208, weight: 2 },
       { key: 'boat',   kind: 'high', w: 72, h: 62, weight: 1 },
       { key: 'branch', kind: 'high', w: 40, h: 96, weight: 1 },
     ],

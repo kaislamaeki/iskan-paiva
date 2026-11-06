@@ -21,7 +21,7 @@ const OBSTACLE_IMAGES = {
   log:        { dx: -1, bottom: 0, h: 110 },
   buoy:       { dx: 0, bottom: 0, h: 125 },
   rock:       { dx: 0, bottom: 0, h: 125 },
-  duck:       { dx: -6, bottom: 3, h: 48 },
+  duck:       { dx: -4, bottom: 3, h: 33 },
   boat:       { dx: 0, bottom: -12, h: 65 },
   branch:     { dx: -43, bottom: 2, h: 192 },
   skirock:    { dx: 0, bottom: 0, h: 24 },
