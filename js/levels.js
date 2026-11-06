@@ -24,7 +24,9 @@ const LEVELS = [
       { key: 'box',     kind: 'low',  w: 28, h: 26, weight: 3 },
       { key: 'desk',    kind: 'low',  w: 42, h: 24, weight: 2 },
       { key: 'glasses', kind: 'high', w: 34, h: 18, weight: 2 },
-      { key: 'paper',   kind: 'high', w: 22, h: 20, weight: 2 },
+      { key: 'paperplane', kind: 'high', w: 30, h: 18, weight: 2 },
+      { key: 'mug',     kind: 'high', w: 22, h: 20, weight: 2 },
+      { key: 'chair',   kind: 'low',  w: 30, h: 34, weight: 2 },
     ],
   },
   {
@@ -32,7 +34,10 @@ const LEVELS = [
     obstacles: [
       { key: 'tree',      kind: 'low',  w: 30, weight: 3 },
       { key: 'powerline', kind: 'low',  w: 90, weight: 1 },
-      { key: 'birds',     kind: 'high', w: 26, weight: 2 },
+      { key: 'geese',     kind: 'high', w: 40, weight: 2 },
+      { key: 'balloon',   kind: 'high', w: 40, weight: 2 },
+      { key: 'windturbine', kind: 'low', w: 34, weight: 2 },
+      { key: 'radiomast', kind: 'low',  w: 24, weight: 1 },
       { key: 'glider',    kind: 'high', w: 30, weight: 2 },
     ],
   },

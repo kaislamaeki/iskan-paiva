@@ -491,16 +491,41 @@ const ART = (() => {
       const b = bob(t, o, 2, 7);
       blit(ctx, SPR.glasses, o.x + o.w / 2 - 24, o.y + o.h / 2 - 9 + b);
     },
-    paper(ctx, o, t) {
-      const f = Math.floor(t * 6 + (o.seed || 0)) % 2;
+    paperplane(ctx, o, t) {
+      // paper airplane gliding in nose-first
+      begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 2, 4));
+      outlined([
+        [4, -3, 3, 1, '#ffffff'], [1, -2, 6, 1, '#ffffff'], [-2, -1, 9, 1, '#ffffff'],
+        [-7, 0, 14, 1, '#ffffff'], [-3, 1, 10, 1, '#dfe6ee'], [2, 2, 5, 1, '#dfe6ee'],
+      ], '#6b7a8c');
+      r(-5, 0, 12, 1, '#c9d6e3');                                       // fold
+      r(9, -2, 3, 1, 'rgba(255,255,255,0.8)'); r(10, 1, 3, 1, 'rgba(255,255,255,0.6)'); // speed lines
+      end();
+    },
+    mug(ctx, o, t) {
+      // coffee mug flying through the office, spilling a little
       begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 2, 5));
-      if (f === 0) {
-        r(-4, -4, 8, 8, '#ffffff'); r(2, -4, 2, 2, '#d9d9d9');
-        r(-3, -2, 5, 1, '#9fb3c8'); r(-3, 0, 6, 1, '#9fb3c8'); r(-3, 2, 4, 1, '#9fb3c8');
-      } else {
-        for (let i = 0; i < 8; i++) r(-4 + (i >> 2), -4 + i, 8, 1, '#ffffff');
-        r(-3, -2, 5, 1, '#9fb3c8'); r(-2, 0, 5, 1, '#9fb3c8'); r(-2, 2, 4, 1, '#9fb3c8');
-      }
+      outlined([
+        [-3, -3, 6, 7, '#ffffff'],                                      // cup
+        [3, -2, 2, 1, '#ffffff'], [4, -1, 1, 3, '#ffffff'], [3, 2, 2, 1, '#ffffff'], // handle
+      ], '#5d4a3a');
+      r(-2, -3, 4, 1, '#6b3e1f');                                       // coffee
+      r(-3, 1, 6, 1, '#e74c3c');                                        // red band
+      r(1, -5, 1, 1, '#6b3e1f'); r(3, -6, 1, 1, '#6b3e1f'); r(5, -5, 1, 1, '#6b3e1f'); // splash
+      end();
+    },
+    chair(ctx, o) {
+      // office chair rolling toward Lauri (seat left, backrest right)
+      begin(ctx, o.x + o.w / 2, o.y + o.h);
+      outlined([
+        [-5, -2, 10, 1, '#555b66'],                                     // star base
+        [-1, -6, 2, 4, '#9aa4ad'],                                      // gas lift
+        [-5, -8, 10, 2, '#2c3e66'],                                     // seat
+        [3, -15, 3, 7, '#2c3e66'],                                      // backrest
+        [-3, -10, 4, 1, '#333a44'],                                     // armrest
+      ], '#151b26');
+      r(-5, -8, 10, 1, '#3d5287'); r(3, -15, 1, 7, '#3d5287');          // highlights
+      r(-6, -1, 2, 1, '#2b2b2b'); r(-1, -1, 2, 1, '#2b2b2b'); r(4, -1, 2, 1, '#2b2b2b'); // wheels
       end();
     },
 
@@ -539,11 +564,75 @@ const ART = (() => {
         }
       }
     },
-    birds(ctx, o, t) {
-      const f = Math.floor(t * 6 + (o.seed || 0)) % 2;
+    geese(ctx, o, t) {
+      // five geese in a V, pointing the way they fly (left), spread top to bottom
+      const f = Math.floor(t * 5 + (o.seed || 0)) % 2;
       const cx = o.x + o.w / 2;
-      const pos = [[-8, 2], [6, 18], [-4, 36], [8, 52]];
-      for (const [dx, dy] of pos) blit(ctx, SPR.bird[(f + (dy > 20 ? 1 : 0)) % 2], cx + dx - 10, o.y + dy + bob(t, o, 1, 4));
+      const pos = [[-22, 28], [0, 14], [0, 42], [22, 0], [22, 56]];
+      pos.forEach(([dx, dy], i) => {
+        begin(ctx, cx + dx, o.y + dy + 6);
+        const up = (f + i) % 2 === 0;
+        outlined([
+          [-3, 0, 6, 2, '#8a7f70'],                                     // body
+          [-6, 0, 3, 1, '#222222'], [-8, -1, 2, 2, '#222222'],          // neck + head
+          up ? [-1, -3, 3, 3, '#6f6558'] : [-1, 2, 3, 2, '#6f6558'],    // wing
+        ], '#3a332b');
+        r(-7, 0, 1, 1, '#ffffff'); r(-9, 0, 1, 1, '#333333'); r(3, 0, 1, 1, '#ffffff');
+        end();
+      });
+    },
+    windturbine(ctx, o) {
+      // white wind turbine; hub at the top of the hitbox, blades kept short
+      const cx = o.x + o.w / 2, base = o.y + o.h;
+      begin(ctx, cx, base);
+      const hy = -Math.round(o.h / U) + 2;                              // hub height (units)
+      const parts = [[-1, hy, 2, -hy, '#f2f4f5'], [-2, -8, 4, 8, '#e6e9eb'], [-2, hy - 1, 5, 3, '#e6e9eb']];
+      for (const a of [-90, 30, 150]) {
+        const ca = Math.cos(a * Math.PI / 180), sa = Math.sin(a * Math.PI / 180);
+        for (let i = 1; i <= 13; i++) parts.push([Math.round(-1 + ca * i), Math.round(hy + sa * i), i < 9 ? 2 : 1, 1, '#ffffff']);
+      }
+      outlined(parts, '#7f8a96');
+      r(-2, hy, 2, 2, '#cfd5d9');                                       // hub
+      for (const a of [-90, 30, 150]) {
+        const ca = Math.cos(a * Math.PI / 180), sa = Math.sin(a * Math.PI / 180);
+        r(Math.round(-1 + ca * 12), Math.round(hy + sa * 12), 1, 1, '#e63946');   // red blade tips
+      }
+      end();
+    },
+    radiomast(ctx, o) {
+      // red/white lattice radio mast with guy wires and a red light on top
+      const cx = o.x + o.w / 2, base = o.y + o.h;
+      const top = -Math.round(o.h / U) - 2;
+      lines(ctx, cx, base + top * U + 12, cx - 70, base);
+      lines(ctx, cx, base + top * U + 12, cx + 70, base);
+      lines(ctx, cx, base + top * U / 2, cx - 50, base);
+      lines(ctx, cx, base + top * U / 2, cx + 50, base);
+      begin(ctx, cx, base);
+      for (let y = top; y < 0; y++) {
+        const c = Math.floor((y - top) / 7) % 2 ? '#ffffff' : '#e63946';
+        r(-2, y, 1, 1, c); r(1, y, 1, 1, c);
+        r(((y % 2) + 2) % 2 ? -1 : 0, y, 1, 1, c);                      // zigzag brace
+      }
+      r(-3, -1, 6, 1, '#7f8a96');
+      r(0, top - 4, 1, 4, '#9aa4ad'); r(-1, top - 5, 3, 1, '#ff3b3b');
+      end();
+    },
+    balloon(ctx, o) {
+      // colourful hot-air balloon with a little basket
+      begin(ctx, o.x + o.w / 2, o.y + 28);
+      const cols = ['#e63946', '#f4a261', '#2a9d8f', '#e9c46a'];
+      const rows = [];
+      for (let y = -9; y <= 8; y++) {
+        const hw = Math.max(1, Math.round(8 * Math.sqrt(Math.max(0, 1 - (y / 9.5) ** 2)) * (y > 0 ? 1 - y / 18 : 1)));
+        rows.push([-hw, y, hw * 2, 1, '#e63946']);
+      }
+      outlined(rows, '#5a2a2a');
+      for (const [x0, y, w] of rows) for (let x = x0; x < x0 + w; x++) r(x, y, 1, 1, cols[((x + 16) >> 1) % 4]);
+      r(-4, -8, 2, 3, 'rgba(255,255,255,0.35)');                        // shine
+      r(-3, 9, 1, 3, '#6d4c41'); r(2, 9, 1, 3, '#6d4c41');              // ropes
+      outlined([[-3, 12, 6, 3, '#a0683a']], '#4e342e');                 // basket
+      r(-1, 10, 2, 2, '#f1c4a0');                                       // passenger
+      end();
     },
     glider(ctx, o, t) {
       const cx = o.x + o.w / 2;
