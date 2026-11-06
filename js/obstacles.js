@@ -7,17 +7,55 @@ const Obstacles = {
   reset(level) {
     this.list = [];
     this.distToNext = CONFIG.FIRST_OBSTACLE_DELAY * level.baseSpeed;
+    this.deck = this.buildDeck(level);
+    this.bags = { low: [], high: [] };
+    this.counts = { low: 0, high: 0 };
     this.next = this.pick(level);
   },
 
-  // Fair mix: first low or high (50/50), then any obstacle of that kind with
-  // equal chance. So every level has as many jumps as ducks, and no single
-  // obstacle shows up more often than the others of its kind.
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  },
+
+  // Every obstacle of the level once, in random order, alternating low/high.
+  // This comes first, so each obstacle appears at least once per level.
+  buildDeck(level) {
+    const lows = this.shuffle(level.obstacles.filter((ty) => ty.kind === 'low'));
+    const highs = this.shuffle(level.obstacles.filter((ty) => ty.kind === 'high'));
+    const deck = [];
+    let useLow = Math.random() < 0.5;
+    while (lows.length || highs.length) {
+      const from = (useLow && lows.length) || !highs.length ? lows : highs;
+      deck.push(from.shift());
+      useLow = !useLow;
+    }
+    return deck;
+  },
+
+  // After the deck: a fair mix. Low or high 50/50 (but never more than 2 ahead of
+  // the other), then the next obstacle from a shuffled bag of that kind, so none
+  // of them repeats much more than the others.
   pick(level) {
+    const ty = this.deck.length ? this.deck.shift() : this.pickFromBags(level);
+    this.counts[ty.kind]++;
+    return ty;
+  },
+
+  pickFromBags(level) {
     const lows = level.obstacles.filter((ty) => ty.kind === 'low');
     const highs = level.obstacles.filter((ty) => ty.kind === 'high');
-    const pool = !highs.length || (lows.length && Math.random() < 0.5) ? lows : highs;
-    return pool[Math.floor(Math.random() * pool.length)];
+    const diff = this.counts.low - this.counts.high;
+    let kind = Math.random() < 0.5 ? 'low' : 'high';
+    if (diff >= 2) kind = 'high';
+    if (diff <= -2) kind = 'low';
+    if (!highs.length) kind = 'low';
+    if (!lows.length) kind = 'high';
+    if (!this.bags[kind].length) this.bags[kind] = this.shuffle((kind === 'low' ? lows : highs).slice());
+    return this.bags[kind].shift();
   },
 
   // Vertical placement of a hitbox, depending on movement mode
