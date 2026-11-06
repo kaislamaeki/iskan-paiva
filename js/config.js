@@ -44,7 +44,8 @@ const CONFIG = {
   // Paragliding level
   GLIDE: {
     baseY: 150,              // pilot centre at rest
-    offset: 80,              // how far up/down a rise/dive goes
+    offset: 80,              // how far up a rise goes
+    diveOffset: 104,         // how far down a dive goes (deep enough that the canopy clears birds/gliders)
     hold: 0.55,              // seconds it stays up/down after the key is released
     stiffness: 95,           // spring back to base (higher = snappier)
     damping: 19.5,

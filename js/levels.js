@@ -16,7 +16,7 @@ const PLAYER_SETS = {
 // Obstacles: kind 'low' = avoid with UP, 'high' = avoid with DOWN.
 // w/h = hitbox size (the sprite is drawn a bit bigger). For glide/swim the
 // vertical extent comes from CONFIG.GLIDE / CONFIG.SWIM, so only w matters
-// (and h for swim 'high' obstacles).
+// (and h for swim 'high' obstacles, plus an optional 'bottom' y where one ends).
 const LEVELS = [
   {
     id: 'office', player: 'office', bg: 'office', gate: 'rooftop',
@@ -39,7 +39,7 @@ const LEVELS = [
   {
     id: 'horse', player: 'horse', bg: 'horse', gate: 'pier',
     obstacles: [
-      { key: 'fence',     kind: 'low',  w: 26, h: 28, weight: 3 },
+      { key: 'fence',     kind: 'low',  w: 36, h: 30, weight: 3 },
       { key: 'lowglider', kind: 'high', w: 26, h: 20, weight: 2 },
     ],
   },
@@ -49,7 +49,7 @@ const LEVELS = [
       { key: 'log',    kind: 'low',  w: 46, weight: 2 },
       { key: 'buoy',   kind: 'low',  w: 18, weight: 2 },
       { key: 'rock',   kind: 'low',  w: 38, weight: 2 },
-      { key: 'duck',   kind: 'high', w: 26, h: 34, weight: 2 },
+      { key: 'duck',   kind: 'high', w: 40, h: 30, bottom: 208, weight: 2 },
       { key: 'boat',   kind: 'high', w: 72, h: 62, weight: 1 },
       { key: 'branch', kind: 'high', w: 40, h: 96, weight: 1 },
     ],

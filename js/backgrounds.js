@@ -160,9 +160,9 @@ const BG = (() => {
         R(g, 0, 205, W, RUN_G - 205, '#8cc56b');
         R(g, 0, 205, W, 3, '#9fd47c');
         for (let i = 0; i < 160; i++) R(g, rnd() * W, 210 + rnd() * 42, 3, 3, ['#f7d04a', '#ffffff', '#e86a9a', '#b388eb'][i % 4]);
-        // distant fence
-        for (let x = 0; x < W; x += 30) R(g, x, 214, 3, 12, '#a07850');
-        R(g, 0, 217, W, 2, '#b08a60'); R(g, 0, 222, W, 2, '#b08a60');
+        // distant fence (faded, so it can't be mistaken for an obstacle)
+        for (let x = 0; x < W; x += 30) R(g, x, 214, 3, 12, '#9fbf7e');
+        R(g, 0, 217, W, 2, '#a9c78a'); R(g, 0, 222, W, 2, '#a9c78a');
       }, 33) },
       { f: 1, canvas: makeLayer((g, rnd) => {
         R(g, 0, RUN_G, W, H - RUN_G, '#6fb04f');

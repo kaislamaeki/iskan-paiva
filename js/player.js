@@ -73,7 +73,7 @@ class Player {
       if (this.dir === 1 && inp.down) this.holdT = G.hold;
       this.holdT -= dt;
       if (this.holdT <= 0) this.dir = 0;
-      target = G.baseY + this.dir * G.offset;
+      target = G.baseY + (this.dir < 0 ? -G.offset : this.dir > 0 ? G.diveOffset : 0);
     } else if (this.auto) {
       target = this.auto.y;
     }

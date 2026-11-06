@@ -459,6 +459,12 @@ const ART = (() => {
     ], { k: OUT, b: '#4b6584', w: '#c7ecee' });
   }
 
+  // Draw a set of unit rects with a 1-unit outline around the whole shape
+  function outlined(parts, ink) {
+    for (const [x, y, w, h] of parts) r(x - 1, y - 1, w + 2, h + 2, ink);
+    for (const [x, y, w, h, c] of parts) r(x, y, w, h, c);
+  }
+
   // ---------- obstacles ----------
   // Each gets the obstacle (hitbox x, y, w, h) and draws around it.
   // Visuals are a bit bigger than hitboxes on purpose (forgiving).
@@ -557,12 +563,16 @@ const ART = (() => {
 
     // --- horse
     fence(ctx, o) {
+      // show-jumping fence: white standards, red/white striped poles, dark outline
       begin(ctx, o.x + o.w / 2, o.y + o.h);
-      r(-7, -9, 14, 2, '#a86f45'); r(-7, -5, 14, 2, '#a86f45');
-      r(-7, -9, 14, 1, '#c48a5c'); r(-7, -5, 14, 1, '#c48a5c');
-      r(-6, -11, 2, 11, '#8d5a3b'); r(4, -11, 2, 11, '#8d5a3b');
-      r(-6, -11, 2, 1, '#6b4128'); r(4, -11, 2, 1, '#6b4128');
-      r(-8, -1, 3, 1, '#6aa84f'); r(6, -1, 3, 1, '#6aa84f');
+      outlined([
+        [-8, -12, 2, 12, '#ffffff'], [6, -12, 2, 12, '#ffffff'],      // standards
+        [-9, -1, 4, 1, '#ffffff'], [5, -1, 4, 1, '#ffffff'],          // feet
+        [-6, -10, 12, 2, '#ffffff'], [-6, -6, 12, 2, '#ffffff'],      // poles
+      ], '#2b2b3b');
+      for (let x = -6; x < 6; x += 4) { r(x, -10, 2, 2, '#e63946'); r(x + 2, -6, 2, 2, '#e63946'); }
+      r(-8, -12, 2, 1, '#e63946'); r(6, -12, 2, 1, '#e63946');
+      r(-6, -10, 12, 1, 'rgba(255,255,255,0.35)'); r(-6, -6, 12, 1, 'rgba(255,255,255,0.35)');
       end();
     },
     lowglider(ctx, o, t) {
@@ -625,12 +635,22 @@ const ART = (() => {
       end();
     },
     duck(ctx, o, t) {
-      const f = Math.floor(t * 7 + (o.seed || 0)) % 2;
-      const sy = CONFIG.SWIM.surfaceY;
-      blit(ctx, SPR.duck[f], o.x + o.w / 2 - 15, sy - 22 + bob(t, o, 1, 5));
-      ctx.fillStyle = '#ffffff';
-      const s = Math.floor(t * 10) % 3;
-      ctx.fillRect(Math.round(o.x + o.w / 2 + 12 + s * 3), sy - 2, 3, 3);
+      // big mallard skimming over the water, wings up, dark outline (fills its hitbox)
+      begin(ctx, o.x + o.w / 2, o.y + o.h + bob(t, o, 1, 5));
+      outlined([
+        [-5, -6, 11, 5, '#d9d4c7'],                                   // body
+        [-7, -6, 3, 4, '#8b4513'],                                    // chestnut breast
+        [6, -7, 2, 3, '#2b2b2b'],                                     // tail
+        [-9, -10, 4, 4, '#2e9e5b'], [-8, -11, 3, 1, '#2e9e5b'],       // head
+        [-12, -9, 3, 2, '#f6b93b'],                                   // beak
+        [-1, -10, 6, 4, '#9a9488'], [0, -13, 5, 3, '#9a9488'], [2, -14, 3, 1, '#9a9488'], // raised wing
+      ], '#1b2430');
+      r(-7, -6, 3, 1, '#ffffff');                                     // white collar
+      r(-8, -9, 1, 1, '#111111'); r(-7, -10, 1, 1, '#1f7a43');        // eye + head shine
+      r(0, -7, 4, 1, '#3b5bdb');                                      // blue wing patch
+      r(-4, -2, 9, 1, '#c4beb1');                                     // belly
+      r(-6, 0, 3, 1, '#ffffff'); r(4, 0, 3, 1, '#ffffff');            // spray on the water
+      end();
     },
     boat(ctx, o, t) {
       const cx = o.x + o.w / 2, sy = CONFIG.SWIM.surfaceY;

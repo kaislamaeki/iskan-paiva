@@ -38,7 +38,7 @@ const Obstacles = {
     }
     const S = CONFIG.SWIM;
     if (type.kind === 'low') return { y: S.lowTop, h: S.bottomY - S.lowTop };
-    return { y: S.highBottom - type.h, h: type.h };
+    return { y: (type.bottom || S.highBottom) - type.h, h: type.h }; // 'bottom' lets one obstacle sit higher
   },
 
   spawn(level, speed) {
