@@ -676,6 +676,68 @@ const ART = (() => {
       }
       end();
     },
+    reindeer(ctx, o) {
+      // Lapland reindeer standing in the snow, facing Lauri
+      begin(ctx, o.x + o.w / 2, o.y + o.h);
+      const fur = '#8b6b4a', dark = '#5a4632', hoof = '#3a2a1a';
+      outlined([
+        [-5, -9, 11, 5, fur],                                           // body
+        [-8, -12, 3, 5, fur],                                           // neck
+        [-11, -14, 5, 3, fur], [-12, -13, 1, 2, dark],                  // head + muzzle
+        [-4, -4, 1, 4, dark], [-2, -4, 1, 4, dark], [2, -4, 1, 4, dark], [4, -4, 1, 4, dark], // legs
+        [6, -9, 1, 2, '#f4efe3'],                                       // tail
+        // antlers
+        [-9, -19, 1, 5, '#c9b28f'], [-11, -19, 2, 1, '#c9b28f'], [-8, -17, 2, 1, '#c9b28f'],
+        [-7, -20, 1, 6, '#c9b28f'], [-6, -21, 1, 1, '#c9b28f'], [-6, -18, 2, 1, '#c9b28f'],
+      ], '#2b1d12');
+      r(-8, -8, 3, 3, '#efe6d6');                                       // white neck mane
+      r(-4, -5, 9, 1, '#a8896a');                                       // belly
+      r(-10, -13, 1, 1, '#111111');                                     // eye
+      r(-12, -12, 1, 1, '#2b2b2b');                                     // nose
+      r(-7, -14, 1, 1, dark);                                           // ear
+      for (const x of [-4, -2, 2, 4]) r(x, -1, 1, 1, hoof);
+      end();
+    },
+    flyingbook(ctx, o, t) {
+      // a book escaped from the endless shelf, flapping like a bird
+      begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 2, 5));
+      outlined([
+        [-7, -4, 3, 2, '#c0392b'], [-5, -3, 3, 2, '#c0392b'], [-3, -2, 3, 2, '#c0392b'],   // left cover
+        [4, -4, 3, 2, '#c0392b'], [2, -3, 3, 2, '#c0392b'], [0, -2, 3, 2, '#c0392b'],      // right cover
+        [-1, -1, 2, 3, '#8e2a20'],                                      // spine
+      ], '#3a1410');
+      r(-6, -3, 2, 1, '#fffaf0'); r(-4, -2, 3, 1, '#fffaf0'); r(1, -2, 3, 1, '#fffaf0'); r(4, -3, 2, 1, '#fffaf0'); // pages
+      r(-6, -4, 1, 1, '#f1c40f'); r(5, -4, 1, 1, '#f1c40f');           // gold corners
+      end();
+    },
+    cat(ctx, o, t) {
+      // ginger cat leaping off the shelf, stretched out mid-air
+      begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 1, 4));
+      const fur = '#e6913a', stripe = '#b8662a';
+      outlined([
+        [-5, -2, 9, 3, fur],                                            // body
+        [-8, -4, 4, 4, fur], [-8, -5, 1, 1, fur], [-5, -5, 1, 1, fur],  // head + ears
+        [-11, 0, 3, 1, fur], [-10, 1, 2, 1, fur],                       // front legs
+        [4, 0, 3, 1, fur], [5, 1, 3, 1, fur],                           // back legs
+        [4, -3, 1, 2, fur], [5, -5, 1, 2, fur], [6, -6, 2, 1, fur],     // tail
+      ], '#3a2210');
+      for (const x of [-3, 0, 3]) r(x, -2, 1, 2, stripe);
+      r(-7, -2, 2, 2, '#fff3e0');                                       // white muzzle
+      r(-7, -3, 1, 1, '#2b6b2b'); r(-5, -3, 1, 1, '#2b6b2b');           // green eyes
+      end();
+    },
+    robotvac(ctx, o) {
+      // robot vacuum cleaner on its rounds, with a little dust trail
+      begin(ctx, o.x + o.w / 2, o.y + o.h);
+      outlined([
+        [-5, -5, 10, 1, '#3a3a44'], [-6, -4, 12, 3, '#2b2b33'],         // round body
+        [-6, -1, 12, 1, '#555b66'],                                     // bumper
+      ], '#111118');
+      r(-1, -5, 2, 1, '#4caf50');                                       // power light
+      r(-3, -3, 6, 1, '#454552');                                       // lid line
+      r(7, -1, 1, 1, '#c9b8a0'); r(9, -2, 1, 1, '#c9b8a0'); r(8, 0, 1, 1, '#c9b8a0'); // dust
+      end();
+    },
     hay(ctx, o) {
       // round hay bale, seen from the end (spiral), with straws sticking out
       begin(ctx, o.x + o.w / 2, o.y + o.h);
@@ -915,22 +977,49 @@ const ART = (() => {
   // Obstacle images: assets/obstacles/<key>.png (see js/obstacle-images.js).
   // Replace a png to change how that obstacle looks; any size works, it is
   // scaled to the original height and stands on the same spot.
-  const obstacleImgs = {};
+  const obstacleImgs = {};   // key -> { src, pad, srcH }
+  const OUTLINE_PX = 2;      // outline thickness on screen for images marked outline: true
+  const OUTLINE_INK = '#1f1d2b';
+
+  // Image with a dark outline around its shape (for contrast with the background)
+  function withOutline(img, m) {
+    const pad = Math.max(1, Math.round(OUTLINE_PX * img.height / m.h));
+    const sil = document.createElement('canvas');
+    sil.width = img.width; sil.height = img.height;
+    const sg = sil.getContext('2d');
+    sg.drawImage(img, 0, 0);
+    sg.globalCompositeOperation = 'source-in';
+    sg.fillStyle = OUTLINE_INK;
+    sg.fillRect(0, 0, img.width, img.height);
+    const c = document.createElement('canvas');
+    c.width = img.width + pad * 2; c.height = img.height + pad * 2;
+    const g = c.getContext('2d');
+    for (let dy = -pad; dy <= pad; dy++) {
+      for (let dx = -pad; dx <= pad; dx++) if (dx * dx + dy * dy <= pad * pad + 0.5) g.drawImage(sil, pad + dx, pad + dy);
+    }
+    g.drawImage(img, pad, pad);
+    return { src: c, pad, srcH: img.height };
+  }
+
   function loadObstacleImages() {
     if (typeof OBSTACLE_IMAGES === 'undefined') return;
     for (const key in OBSTACLE_IMAGES) {
       const img = new Image();
-      img.onload = () => { obstacleImgs[key] = img; };
+      img.onload = () => {
+        const m = OBSTACLE_IMAGES[key];
+        obstacleImgs[key] = m.outline ? withOutline(img, m) : { src: img, pad: 0, srcH: img.height };
+      };
       img.src = 'assets/obstacles/' + key + '.png';
     }
   }
 
   function drawObstacle(ctx, o, t, codeOnly = false) {
-    const img = !codeOnly && obstacleImgs[o.type.key];
-    if (img) {
+    const im = !codeOnly && obstacleImgs[o.type.key];
+    if (im) {
       const m = OBSTACLE_IMAGES[o.type.key];
-      const s = m.h / img.height;
-      const w = img.width * s, h = m.h;
+      const img = im.src;
+      const s = m.h / im.srcH;
+      const w = img.width * s, h = img.height * s;
       const flying = o.type.kind === 'high' && o.type.key !== 'branch' && o.type.key !== 'snowbranch' && o.type.key !== 'liftchair';
       const b = flying ? Math.round(Math.sin(t * 6 + (o.seed || 0)) * 2) : 0;
       // 'buzz' obstacles (mosquitoes) jitter quickly so a still image looks alive
@@ -938,7 +1027,9 @@ const ART = (() => {
       const jy = o.type.buzz ? Math.round(Math.cos(t * 29 + (o.seed || 0) * 2) * 1.5) : 0;
       // crisp when shrunk by a whole factor (pixel art drawn big, e.g. 12 px per pixel)
       ctx.imageSmoothingEnabled = s < 1 && Math.abs(1 / s - Math.round(1 / s)) > 0.01;
-      ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx - w / 2 + jx), Math.round(o.y + o.h + m.bottom - h + b + jy), Math.round(w), Math.round(h));
+      // the original image's bottom edge sits at hitbox bottom + m.bottom (the outline adds pad below it)
+      const y = o.y + o.h + m.bottom - (im.srcH + im.pad) * s;
+      ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx - w / 2 + jx), Math.round(y + b + jy), Math.round(w), Math.round(h));
       ctx.imageSmoothingEnabled = false;
       return;
     }
@@ -1249,13 +1340,6 @@ const ART = (() => {
         const k = (t * 0.7 + ix * 0.13) % 1.5;
         if (k < 1) r(ix, top + len + Math.round(k * 10), 1, 1, '#9fd3ff');
       }
-      // a fish jumping out of the water
-      const fp = t % 3.2;
-      if (fp < 1) {
-        const fx = 24 + Math.round(fp * 12), fy = -Math.round(Math.sin(fp * Math.PI) * 12);
-        r(fx, fy, 3, 2, '#f39c12'); r(fx - 1, fy + (fp < 0.5 ? 1 : -1), 1, 2, '#e67e22'); r(fx + 2, fy, 1, 1, OUT);
-      }
-      if (fp < 0.15 || (fp > 0.85 && fp < 1.1)) r(fp < 0.5 ? 23 : 35, -1, 3, 1, '#ffffff');
       // ice floe for Pyry
       r(-36, -1, 13, 2, '#eaf8ff'); r(-35, 1, 11, 1, '#bfe3f5');
       end();

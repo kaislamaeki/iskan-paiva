@@ -7,19 +7,17 @@ const Obstacles = {
   reset(level) {
     this.list = [];
     this.distToNext = CONFIG.FIRST_OBSTACLE_DELAY * level.baseSpeed;
-    this.next = this.pick(level, null);
+    this.next = this.pick(level);
   },
 
-  pick(level, prev) {
-    const types = level.obstacles;
-    let total = 0;
-    for (const ty of types) total += ty.weight || 1;
-    let r = Math.random() * total;
-    for (const ty of types) {
-      r -= ty.weight || 1;
-      if (r <= 0) return ty;
-    }
-    return types[types.length - 1];
+  // Fair mix: first low or high (50/50), then any obstacle of that kind with
+  // equal chance. So every level has as many jumps as ducks, and no single
+  // obstacle shows up more often than the others of its kind.
+  pick(level) {
+    const lows = level.obstacles.filter((ty) => ty.kind === 'low');
+    const highs = level.obstacles.filter((ty) => ty.kind === 'high');
+    const pool = !highs.length || (lows.length && Math.random() < 0.5) ? lows : highs;
+    return pool[Math.floor(Math.random() * pool.length)];
   },
 
   // Vertical placement of a hitbox, depending on movement mode
@@ -47,7 +45,7 @@ const Obstacles = {
     this.list.push({ type, x: CONFIG.WIDTH + 40, y: p.y, w: type.w, h: p.h, seed: Math.random() * 10 });
 
     // choose the following obstacle now so the gap can account for it
-    this.next = this.pick(level, type);
+    this.next = this.pick(level);
     const G = CONFIG.GAP;
     let gapTime = G[level.mode] + Math.random() * G.randomExtra;
     if (this.next.kind !== type.kind) gapTime += 0.15; // switching up<->down needs a moment
