@@ -27,7 +27,7 @@ Open `index.html` in a browser (Chrome works best).
 3. On GitHub, open **Settings → Pages**. Under *Build and deployment*, choose **Deploy from a branch**, then branch `main` and folder `/ (root)`. Save.
 4. After a minute the game is live at `https://<your-user>.github.io/iskan-paiva/`.
 
-**Before sharing the final version:** set `DEV: false` in `js/config.js`. This turns off the debug and level-skip keys and the test URL options.
+**Dev mode is off** (`DEV: false` in `js/config.js`), so the public version has no debug keys or test URL options. Set it to `true` while you work on the game locally, and back to `false` before uploading.
 
 ## Where to change things
 
@@ -67,7 +67,7 @@ Every obstacle has its own image in `assets/obstacles/`, for example `box.png`, 
 
 Put the files in `assets/sounds/` and set the paths in `SOUNDS` in `js/config.js`. The available hooks are `jump`, `hit`, `gate`, `gameover`, `victory` and `click`.
 
-## Dev helpers (only when `DEV: true`)
+## Dev helpers (only when `DEV: true` in `js/config.js`)
 
 - `D`: show hitboxes and FPS.
 - `N`: skip to the end of the current level.
