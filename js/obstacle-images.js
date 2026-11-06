@@ -23,6 +23,7 @@ const OBSTACLE_IMAGES = {
   hay:          { dx: 2, bottom: 3, h: 42 },
   trough:       { dx: 0, bottom: 3, h: 30 },
   lowglider:  { dx: 2, bottom: 4, h: 82 },
+  mosquitoes:   { dx: 3, bottom: -1, h: 48 },
   log:        { dx: -1, bottom: 0, h: 110 },
   buoy:       { dx: 0, bottom: 0, h: 125 },
   rock:       { dx: 0, bottom: 0, h: 125 },

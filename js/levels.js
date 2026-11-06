@@ -48,6 +48,7 @@ const LEVELS = [
       { key: 'hay',       kind: 'low',  w: 28, h: 28, weight: 2 },
       { key: 'trough',    kind: 'low',  w: 50, h: 20, weight: 2 },
       { key: 'lowglider', kind: 'high', w: 26, h: 20, weight: 2 },
+      { key: 'mosquitoes', kind: 'high', w: 34, h: 24, weight: 2, buzz: true },
     ],
   },
   {

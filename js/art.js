@@ -664,6 +664,18 @@ const ART = (() => {
       r(-6, -10, 12, 1, 'rgba(255,255,255,0.35)'); r(-6, -6, 12, 1, 'rgba(255,255,255,0.35)');
       end();
     },
+    mosquitoes(ctx, o) {
+      // a swarm of mosquitoes at rider-head height (compact, nothing reaching up)
+      begin(ctx, o.x + o.w / 2, o.y + o.h / 2);
+      const bugs = [[-7, -2], [-3, -6], [2, -3], [6, -7], [-5, 3], [0, 2], [5, 2], [-1, -9], [8, -2]];
+      for (const [x, y] of bugs) {
+        r(x + 1, y - 2, 1, 2, 'rgba(235,242,255,0.95)'); r(x + 2, y - 2, 1, 1, 'rgba(235,242,255,0.95)'); // wings
+        r(x, y, 3, 1, '#2f2622');                                       // body
+        r(x - 1, y, 1, 1, '#2f2622'); r(x - 2, y + 1, 1, 1, '#2f2622'); // head + sting
+        r(x, y + 1, 1, 1, '#4a3f38'); r(x + 2, y + 1, 1, 1, '#4a3f38'); // legs
+      }
+      end();
+    },
     hay(ctx, o) {
       // round hay bale, seen from the end (spiral), with straws sticking out
       begin(ctx, o.x + o.w / 2, o.y + o.h);
@@ -921,9 +933,12 @@ const ART = (() => {
       const w = img.width * s, h = m.h;
       const flying = o.type.kind === 'high' && o.type.key !== 'branch' && o.type.key !== 'snowbranch' && o.type.key !== 'liftchair';
       const b = flying ? Math.round(Math.sin(t * 6 + (o.seed || 0)) * 2) : 0;
+      // 'buzz' obstacles (mosquitoes) jitter quickly so a still image looks alive
+      const jx = o.type.buzz ? Math.round(Math.sin(t * 37 + (o.seed || 0)) * 1.5) : 0;
+      const jy = o.type.buzz ? Math.round(Math.cos(t * 29 + (o.seed || 0) * 2) * 1.5) : 0;
       // crisp when shrunk by a whole factor (pixel art drawn big, e.g. 12 px per pixel)
       ctx.imageSmoothingEnabled = s < 1 && Math.abs(1 / s - Math.round(1 / s)) > 0.01;
-      ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx - w / 2), Math.round(o.y + o.h + m.bottom - h + b), Math.round(w), Math.round(h));
+      ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx - w / 2 + jx), Math.round(o.y + o.h + m.bottom - h + b + jy), Math.round(w), Math.round(h));
       ctx.imageSmoothingEnabled = false;
       return;
     }
