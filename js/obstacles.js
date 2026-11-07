@@ -77,10 +77,28 @@ const Obstacles = {
     return { y: (type.bottom || S.highBottom) - type.h, h: type.h }; // 'bottom' lets one obstacle sit higher
   },
 
+  // Flying ('high') obstacles must be ducked under, not jumped over: their hit
+  // area reaches up (invisibly) above the highest point Lauri can jump or leap.
+  // Returns how many px to add above the obstacle's top.
+  reach(type, level, y) {
+    if (type.kind !== 'high') return 0;
+    if (level.mode === 'run') {
+      const R = CONFIG.RUN;
+      const peak = R.jumpVel * R.jumpVel / (2 * R.gravity);   // ~104 px
+      return Math.max(0, y - (R.groundY - peak - 16));
+    }
+    if (level.mode === 'swim') return Math.max(0, y - 20);    // even a leap out of a dive can't clear it
+    return 0;                                                  // paragliding is already correct
+  },
+
+  make(type, level, x, seed) {
+    const p = this.place(type, level);
+    return { type, x, y: p.y, w: type.w, h: p.h, seed, reach: this.reach(type, level, p.y) };
+  },
+
   spawn(level, speed) {
     const type = this.next;
-    const p = this.place(type, level);
-    this.list.push({ type, x: CONFIG.WIDTH + 40, y: p.y, w: type.w, h: p.h, seed: Math.random() * 10 });
+    this.list.push(this.make(type, level, CONFIG.WIDTH + 40, Math.random() * 10));
 
     // choose the following obstacle now so the gap can account for it
     this.next = this.pick(level);
@@ -102,7 +120,8 @@ const Obstacles = {
 
   collide(hb) {
     for (const o of this.list) {
-      if (hb.x < o.x + o.w && hb.x + hb.w > o.x && hb.y < o.y + o.h && hb.y + hb.h > o.y) return o;
+      const top = o.y - (o.reach || 0);
+      if (hb.x < o.x + o.w && hb.x + hb.w > o.x && hb.y < o.y + o.h && hb.y + hb.h > top) return o;
     }
     return null;
   },

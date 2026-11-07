@@ -15,7 +15,7 @@ const STR = {
 
   // how to play, on the start screen (desktop / phone)
   howTo: 'Näin pelaat',
-  controlsDesktop: ['Hyppää: ↑ tai välilyönti', 'Kyykisty: ↓ tai Shift', 'Tauko: P'],
+  controlsDesktop: ['Hyppää   = ↑ tai välilyönti', 'Kyykisty  = ↓ tai Shift', 'Tauko  = P'],
   controlsTouch: ['Hyppää: pyyhkäise ylös', 'Kyykisty: pyyhkäise alas', 'Tauko: ‖-nappi'],
   rotatePhone: 'Käännä puhelin vaakatasoon',
 

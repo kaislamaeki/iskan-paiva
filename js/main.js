@@ -409,7 +409,7 @@
       const hb = G.player.hitbox();
       ctx.strokeRect(hb.x + 0.5, hb.y + 0.5, hb.w, hb.h);
       ctx.strokeStyle = '#ff3355';
-      for (const o of Obstacles.list) ctx.strokeRect(o.x + 0.5, o.y + 0.5, o.w, o.h);
+      for (const o of Obstacles.list) ctx.strokeRect(o.x + 0.5, o.y - (o.reach || 0) + 0.5, o.w, o.h + (o.reach || 0));
     }
   }
 
@@ -661,8 +661,7 @@
       params.get('show').split(',').forEach((key, i) => {
         const type = G.level.obstacles.find((ty) => ty.key === key);
         if (!type) return;
-        const pl = Obstacles.place(type, G.level);
-        Obstacles.list.push({ type, x: 300 + i * 170, y: pl.y, w: type.w, h: pl.h, seed: 0 });
+        Obstacles.list.push(Obstacles.make(type, G.level, 300 + i * 170, 0));
       });
     }
   } else if (dev('scene')) {
