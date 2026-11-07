@@ -35,7 +35,7 @@ const Input = {
         this._keyUp = true;
         this._refresh();
         e.preventDefault();
-      } else if (c === 'ArrowDown' || c === 'KeyS') {
+      } else if (c === 'ArrowDown' || c === 'KeyS' || c === 'ShiftLeft' || c === 'ShiftRight') {
         if (!e.repeat) this.downPressed = true;
         this._downKey = true;
         e.preventDefault();
@@ -49,7 +49,7 @@ const Input = {
     window.addEventListener('keyup', (e) => {
       const c = e.code;
       if (c === 'Space' || c === 'ArrowUp' || c === 'KeyW') { this._keyUp = false; this._refresh(); }
-      if (c === 'ArrowDown' || c === 'KeyS') this._downKey = false;
+      if (c === 'ArrowDown' || c === 'KeyS' || c === 'ShiftLeft' || c === 'ShiftRight') this._downKey = false;
     });
 
     window.addEventListener('blur', () => {

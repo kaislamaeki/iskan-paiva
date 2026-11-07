@@ -9,7 +9,7 @@ Plain HTML, CSS and JavaScript. There is no build step and nothing to install.
 Open `index.html` in a browser (Chrome works best).
 
 - **Up**: Space, Arrow Up, W, or a mouse click. On a phone, tap the top half of the screen (or swipe up).
-- **Down**: hold Arrow Down or S. On a phone, touch and hold the bottom half (or swipe down).
+- **Down**: hold Arrow Down, S or Shift. On a phone, touch and hold the bottom half (or swipe down).
 - **P / Esc**: pause.
 - **Sound on/off**: the speaker button at the top right, or the **M** key. The game remembers the setting.
 
