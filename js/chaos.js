@@ -51,7 +51,10 @@ const CHAOS = (() => {
       player: mode === 'run' ? pick(RUN_BODIES) : src.player,
       obstacles: [...lows, ...highs].map((t) => sized(t, mode)),
       length: CONFIG.LEVEL_LENGTH,
-      baseSpeed: CONFIG.SPEED.base + CONFIG.SPEED.perLevel * Math.min(5 + n, 12),
+      // harder every level: faster (up to a cap) and obstacles closer together (down to a safe floor)
+      baseSpeed: CONFIG.SPEED.base + CONFIG.SPEED.perLevel * Math.min(5 + n * 1.5, 22),
+      gapScale: Math.max(0.75, 1 - 0.03 * (n - 1)),
+      extraScale: Math.max(0.15, 1 - 0.1 * (n - 1)),
       index: 5 + n,
       name: src.name,
       hint: src.hint,

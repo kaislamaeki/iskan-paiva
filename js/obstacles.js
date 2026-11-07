@@ -103,7 +103,8 @@ const Obstacles = {
     // choose the following obstacle now so the gap can account for it
     this.next = this.pick(level);
     const G = CONFIG.GAP;
-    let gapTime = G[level.mode] + Math.random() * G.randomExtra;
+    // gapScale / extraScale (chaos mode) bring obstacles closer together on harder levels
+    let gapTime = G[level.mode] * (level.gapScale || 1) + Math.random() * G.randomExtra * (level.extraScale || 1);
     if (this.next.kind !== type.kind) gapTime += 0.15; // switching up<->down needs a moment
     this.distToNext = type.w + gapTime * speed;
   },
