@@ -319,8 +319,8 @@ const BG = (() => {
         // dim it a little so the game and HUD stay readable in front of all those books
         R(g, 0, 0, W, SHELF_END + 4, 'rgba(40,24,12,0.28)');
         // brass label: Anna-Maria's reading list
-        R(g, 246, 113, 66, 11, '#c9a227'); R(g, 247, 114, 64, 9, '#e8c766');
-        FONT.draw(g, 'LUKULISTA', 279, 115, { scale: 1, color: '#4e342e', align: 'center' });
+        R(g, 236, 113, 82, 11, '#c9a227'); R(g, 237, 114, 80, 9, '#e8c766');
+        FONT.draw(g, 'RANDOM LISTA', 277, 115, { scale: 1, color: '#4e342e', align: 'center' });
         // rolling library ladder on a brass rail
         R(g, 0, 3, W, 3, '#c9a227');
         for (let y = 4; y < SHELF_END + 4; y++) {

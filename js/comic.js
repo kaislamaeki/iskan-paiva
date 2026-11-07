@@ -285,8 +285,9 @@ const Comic = {
 
     // door frame with nameplate
     R(560, 70, 130, 170, '#5d6d7e');
-    R(584, 48, 82, 18, '#c9a227'); R(586, 50, 78, 14, '#e8c766');
-    FONT.draw(ctx, 'LAURI', 625, 51, { scale: 2, color: '#4e342e', align: 'center' });
+    R(573, 24, 104, 42, '#c9a227'); R(575, 26, 100, 38, '#e8c766');
+    FONT.draw(ctx, 'LAURIN', 625, 29, { scale: 2, color: '#4e342e', align: 'center' });
+    FONT.draw(ctx, 'TOIMISTO', 625, 47, { scale: 2, color: '#4e342e', align: 'center' });
     // through the door: the office corridor, same look as level 1
     R(572, 80, 106, 156, '#e6dcc4');
     R(572, 80, 106, 5, '#fffbe6');
