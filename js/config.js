@@ -6,7 +6,7 @@ const CONFIG = {
   // Dev helpers: D = debug (hitboxes + FPS), N = skip to next level.
   // URL params (only when DEV): ?level=3  ?god=1  ?scene=comic|finale|victory|gameover  ?gate=1
   // Set to false for the final version.
-  DEV: true,
+  DEV: false,
 
   START_LIVES: 3,
   INVINCIBLE_TIME: 1.5,     // seconds of blinking after a hit
