@@ -8,9 +8,10 @@ Plain HTML, CSS and JavaScript. There is no build step and nothing to install.
 
 Open `index.html` in a browser (Chrome works best).
 
-- **Up**: Space, Arrow Up, W, or a mouse click. On mobile, tap or swipe up.
-- **Down**: hold Arrow Down or S. On mobile, swipe down.
+- **Up**: Space, Arrow Up, W, or a mouse click. On a phone, tap the top half of the screen (or swipe up).
+- **Down**: hold Arrow Down or S. On a phone, touch and hold the bottom half (or swipe down).
 - **P / Esc**: pause.
+- **Sound on/off**: the speaker button at the top right, or the **M** key. The game remembers the setting.
 
 ## Deploy to GitHub Pages
 
@@ -63,9 +64,12 @@ Every obstacle has its own image in `assets/obstacles/`, for example `box.png`, 
 - **Going back:** delete a png and the game draws that obstacle with the built-in pixel art again.
 - **Collisions:** what counts as a hit is set separately in `js/levels.js`, so a different-looking image never changes how hard the game is.
 
-### Adding sounds
+### Sounds and music
 
-Put the files in `assets/sounds/` and set the paths in `SOUNDS` in `js/config.js`. The available hooks are `jump`, `hit`, `gate`, `gameover`, `victory` and `click`.
+- **Voice effects:** `assets/sounds/jump.wav` ("hop") and `assets/sounds/duck.wav` ("uhh"). Replace them with your own recordings under the same names, or set other paths in `SOUNDS` in `js/config.js`. Unused hooks you can fill: `hit`, `gate`, `gameover`, `victory` and `click`.
+- **Background music:** a chiptune generated in code in `js/music.js`, so there's no music file. The melody, bass and tempo are written out at the top of that file.
+- **Volumes:** `CONFIG.AUDIO` in `js/config.js` (`music` and `effects`, from 0 to 1). Set `music` to 0 to turn the music off completely.
+- **When sound starts:** browsers only allow sound after the first tap or key press, so the music starts then.
 
 ## Dev helpers (only when `DEV: true` in `js/config.js`)
 

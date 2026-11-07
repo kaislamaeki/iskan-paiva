@@ -258,6 +258,12 @@
     Input.update(dt);
     updateFade(dt);
 
+    // sound on/off: the speaker button (top right) or the M key.
+    // A tap on the button is used up here, so it never counts as a jump.
+    const onSoundButton = Input.tap && inRect(Input.tap, soundButton());
+    if (Input.keys.KeyM || onSoundButton) SOUND.toggle();
+    if (onSoundButton) { Input.up = false; Input.confirm = false; Input.downPressed = false; Input.tap = null; }
+
     if (Input.keys.KeyP || Input.keys.Escape) {
       if (G.state === 'play' && G.phase !== 'dying') G.paused = !G.paused;
     }
@@ -320,6 +326,29 @@
   const inRect = (p, r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
   const titleComicButton = () => ({ x: 14, y: 262, w: 150, h: 26 });
   const gameOverTitleButton = () => ({ x: W / 2 - 60, y: 252, w: 120, h: 26 });
+  const soundButton = () => ({ x: 644, y: 8, w: 30, h: 24 });
+
+  // pixel speaker icon; red cross when sound is off
+  function drawSoundButton() {
+    const b = soundButton();
+    ctx.fillStyle = 'rgba(27,27,47,0.6)';
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(b.x + 5, b.y + 9, 4, 6);
+    ctx.fillRect(b.x + 9, b.y + 7, 2, 10);
+    ctx.fillRect(b.x + 11, b.y + 5, 2, 14);
+    if (SOUND.muted) {
+      ctx.fillStyle = '#e8364f';
+      for (let i = 0; i < 5; i++) {
+        ctx.fillRect(b.x + 16 + i * 2, b.y + 7 + i * 2, 2, 2);
+        ctx.fillRect(b.x + 24 - i * 2, b.y + 7 + i * 2, 2, 2);
+      }
+    } else {
+      ctx.fillRect(b.x + 16, b.y + 9, 2, 6);
+      ctx.fillRect(b.x + 20, b.y + 7, 2, 10);
+      ctx.fillRect(b.x + 24, b.y + 5, 2, 14);
+    }
+  }
 
   function button(r, label) {
     ctx.fillStyle = 'rgba(27,27,47,0.8)';
@@ -527,6 +556,7 @@
       FONT.draw(ctx, STR.paused, W / 2, 130, { scale: 5, color: '#ffffff', align: 'center' });
     }
     drawFade();
+    drawSoundButton();
     if (portraitBlock()) {
       ctx.fillStyle = '#1b1b2f';
       ctx.fillRect(0, 0, W, H);

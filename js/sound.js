@@ -1,16 +1,25 @@
-// Sound effects. Set paths in SOUNDS (config.js) and they play.
+// Sound effects + background music, with one on/off switch (remembered).
 // Uses Web Audio when the game is hosted (instant playback, also on phones);
-// when index.html is opened as a local file, falls back to <audio> elements.
+// when index.html is opened as a local file, effects fall back to <audio> elements.
 const SOUND = {
   ctx: null,
+  master: null,       // everything goes through here; 0 when muted
   buffers: {},
   elements: {},
-  volume: 0.8,
+  muted: false,
+  musicStarted: false,
+  KEY: 'iskanpaiva_sound',
 
   init() {
+    try { this.muted = localStorage.getItem(this.KEY) === 'off'; } catch (e) { /* ignore */ }
     const AC = window.AudioContext || window.webkitAudioContext;
     if (AC) {
-      try { this.ctx = new AC(); } catch (e) { this.ctx = null; }
+      try {
+        this.ctx = new AC();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = this.muted ? 0 : 1;
+        this.master.connect(this.ctx.destination);
+      } catch (e) { this.ctx = null; }
     }
     for (const name in SOUNDS) {
       const src = SOUNDS[name];
@@ -32,28 +41,49 @@ const SOUND = {
     }
     // browsers only allow sound after the first tap / key press
     const unlock = () => {
-      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+      if (!this.ctx) return;
+      const go = () => {
+        if (!this.musicStarted && CONFIG.AUDIO.music > 0) {
+          this.musicStarted = true;
+          MUSIC.start(this.ctx, this.master, CONFIG.AUDIO.music);
+        }
+      };
+      if (this.ctx.state === 'suspended') this.ctx.resume().then(go).catch(() => {});
+      else go();
     };
     for (const ev of ['pointerdown', 'keydown', 'touchend']) window.addEventListener(ev, unlock, { passive: true });
+    // pause everything while the tab is hidden
+    document.addEventListener('visibilitychange', () => {
+      if (!this.ctx) return;
+      if (document.hidden) this.ctx.suspend().catch(() => {});
+      else this.ctx.resume().catch(() => {});
+    });
+  },
+
+  toggle() {
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.value = this.muted ? 0 : 1;
+    try { localStorage.setItem(this.KEY, this.muted ? 'off' : 'on'); } catch (e) { /* ignore */ }
   },
 
   play(name) {
-    if (!SOUNDS[name]) return;
+    if (!SOUNDS[name] || this.muted) return;
+    const vol = CONFIG.AUDIO.effects;
     try {
       const buf = this.buffers[name];
       if (this.ctx && buf && this.ctx.state === 'running') {
         const src = this.ctx.createBufferSource();
         const gain = this.ctx.createGain();
-        gain.gain.value = this.volume;
+        gain.gain.value = vol;
         src.buffer = buf;
-        src.connect(gain).connect(this.ctx.destination);
+        src.connect(gain).connect(this.master);
         src.start(0);
         return;
       }
       const el = this.elements[name];
       if (el) {
         const a = el.cloneNode();
-        a.volume = this.volume;
+        a.volume = vol;
         a.play().catch(() => {});
       }
     } catch (e) { /* ignore */ }

@@ -102,6 +102,9 @@ const FACES = {
 // Shirt colours are set per person in PEOPLE in js/art.js.
 const FACE_CHIN_ROW = 13;
 
+// Volumes (0..1). music: the background chiptune (js/music.js), 0 = no music.
+CONFIG.AUDIO = { music: 0.35, effects: 0.8 };
+
 // Sounds. Put a path here and it plays; null = silent. Replace the wav files to change them.
 const SOUNDS = {
   jump: 'assets/sounds/jump.wav',   // male voice "hop" on every jump / rise / leap
