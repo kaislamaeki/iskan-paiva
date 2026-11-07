@@ -129,9 +129,7 @@ const Comic = {
 
     // skip button
     const S = this.SKIP;
-    ctx.fillStyle = 'rgba(27,27,47,0.85)';
-    ctx.fillRect(S.x, S.y, S.w, S.h);
-    FONT.draw(ctx, STR.comicSkip + ' ▸▸', S.x + S.w / 2, S.y + 5, { scale: 2, color: '#ffffff', align: 'center' });
+    FONT.draw(ctx, STR.comicSkip + ' ▸▸', S.x + S.w / 2, S.y + 5, { scale: 2, color: '#2b2b3b', align: 'center' });
 
     // page dots + continue hint
     for (let i = 0; i < STR.comic.length; i++) {
@@ -246,7 +244,7 @@ const Comic = {
     const full = s.phone;
     const n = Math.min(full.length, Math.floor(Math.max(0, pt - 0.3) * 24));
     const msgs = n > 0 ? [{ text: full.slice(0, n), me: true }] : [];
-    drawPhone(ctx, 470, 22, 240, 236, 'TOUKO', msgs, { headerHead: 'touko', t });
+    drawPhone(ctx, 398, 22, 240, 236, 'TOUKO', msgs, { headerHead: 'touko', t });
     if (s.speech) drawBubble(ctx, s.speech, 40, 28, 160, 120, { maxChars: 16 });
   },
 
@@ -285,9 +283,9 @@ const Comic = {
 
     // door frame with nameplate
     R(560, 70, 130, 170, '#5d6d7e');
-    R(573, 24, 104, 42, '#c9a227'); R(575, 26, 100, 38, '#e8c766');
-    FONT.draw(ctx, 'LAURIN', 625, 29, { scale: 2, color: '#4e342e', align: 'center' });
-    FONT.draw(ctx, 'TOIMISTO', 625, 47, { scale: 2, color: '#4e342e', align: 'center' });
+    R(573, 32, 104, 40, '#c9a227'); R(575, 34, 100, 36, '#e8c766');
+    FONT.draw(ctx, 'LAURIN', 625, 37, { scale: 2, color: '#4e342e', align: 'center' });
+    FONT.draw(ctx, 'TOIMISTO', 625, 53, { scale: 2, color: '#4e342e', align: 'center' });
     // through the door: the office corridor, same look as level 1
     R(572, 80, 106, 156, '#e6dcc4');
     R(572, 80, 106, 5, '#fffbe6');
