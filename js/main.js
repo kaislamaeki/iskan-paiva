@@ -442,7 +442,7 @@
       const hb = G.player.hitbox();
       ctx.strokeRect(hb.x + 0.5, hb.y + 0.5, hb.w, hb.h);
       ctx.strokeStyle = '#ff3355';
-      for (const o of Obstacles.list) ctx.strokeRect(o.x + 0.5, o.y - (o.reach || 0) + 0.5, o.w, o.h + (o.reach || 0));
+      for (const o of Obstacles.list) ctx.strokeRect(o.x + 0.5, o.y + 0.5, o.w, o.h);
     }
   }
 

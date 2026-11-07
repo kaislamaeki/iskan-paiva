@@ -15,24 +15,21 @@ const STR = {
 
   // how to play, on the start screen (desktop / phone)
   howTo: 'Näin pelaat',
-  controlsDesktop: ['Hyppää   = ↑ tai välilyönti', 'Kyykisty  = ↓ tai Shift', 'Tauko  = P'],
+  controlsDesktop: ['Hyppää = ↑ tai välilyönti', 'Kyykisty = ↓ tai Shift', 'Tauko = P'],
   controlsTouch: ['Hyppää: pyyhkäise ylös', 'Kyykisty: pyyhkäise alas', 'Tauko: ‖-nappi'],
   rotatePhone: 'Käännä puhelin vaakatasoon',
 
   gameOver: 'GAME OVER',
   tryAgain: 'Yritä uudelleen',
   toTitle: 'Palaa alkuun',
-
-  // chaos mode (after the sauna): endless random levels
-  chaos: 'Kaaos',
-  chaosButton: 'Kaaosmoodi ▸',
-  chaosHint: 'Kaikki sekaisin!',
-  chaosRecord: 'Kaaos-ennätys',   // title screen, once a chaos record exists
   newRecord: 'Uusi ennätys!',
 
   victoryTitle: 'Selvisit kotiin!',
+  finalScore: 'Pisteet',
   // Placeholder for the personal message (use \n for new lines)
   personalMessage: 'Hyvää isänpäivää iskä!<3\nt. Kaisla',
+  playAgain: 'Paina välilyöntiä',
+  playAgainTouch: 'Napauta',
 
   comicSkip: 'Ohita',
   comicNext: 'Jatka',
@@ -41,7 +38,7 @@ const STR = {
   comic: [
     { speech: 'Noniin, valmista tuli!' },
     { speech: 'Tärkein ensiksi...', phone: 'Laitappa sauna lämpenemään.' },
-    { phoneFrom: 'Touko', phone: 'Ok.' },
+    { phoneFrom: 'Touko', phone: 'Ok' },
     { speech: 'Ei kun menoksi!' },
   ],
 
