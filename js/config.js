@@ -105,7 +105,7 @@ const FACE_CHIN_ROW = 13;
 // Sounds. Put a path here and it plays; null = silent. Replace the wav files to change them.
 const SOUNDS = {
   jump: 'assets/sounds/jump.wav',   // male voice "hop" on every jump / rise / leap
-  duck: 'assets/sounds/duck.wav',   // male voice "hee" when ducking / diving
+  duck: 'assets/sounds/duck.wav',   // male voice "uhh" when ducking / diving
   hit: null,
   gate: null,
   gameover: null,
