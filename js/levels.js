@@ -77,7 +77,7 @@ const LEVELS = [
     obstacles: [
       { key: 'books',  kind: 'low',  w: 26, h: 26 },
       { key: 'plant',        kind: 'low',  w: 26, h: 30 },
-      { key: 'espresso',     kind: 'high', w: 24, h: 18 },
+      { key: 'espresso',     kind: 'high', w: 30, h: 22 },
       { key: 'yarnball',     kind: 'low',  w: 26, h: 22 },
       { key: 'knittingsock', kind: 'high', w: 22, h: 20 },
     ],

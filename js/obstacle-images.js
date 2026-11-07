@@ -38,7 +38,7 @@ const OBSTACLE_IMAGES = {
   owl:          { dx: 0, bottom: 1, h: 32 },
   books:      { dx: -1, bottom: 0, h: 30, outline: true },
   plant:        { dx: 0, bottom: 3, h: 63 },
-  espresso:     { dx: 0, bottom: 0, h: 27 },
+  espresso:     { dx: 3, bottom: 0, h: 42 },
   yarnball:     { dx: 4, bottom: 3, h: 32 },
   knittingsock: { dx: 0, bottom: 0, h: 36, outline: true },
 };

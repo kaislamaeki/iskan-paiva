@@ -600,7 +600,7 @@ const ART = (() => {
       end();
     },
     radiomast(ctx, o) {
-      // red/white lattice radio mast with guy wires and a red light on top
+      // grey lattice radio mast with guy wires and a light on top
       const cx = o.x + o.w / 2, base = o.y + o.h;
       const top = -Math.round(o.h / U) - 2;
       lines(ctx, cx, base + top * U + 12, cx - 70, base);
@@ -609,12 +609,12 @@ const ART = (() => {
       lines(ctx, cx, base + top * U / 2, cx + 50, base);
       begin(ctx, cx, base);
       for (let y = top; y < 0; y++) {
-        const c = Math.floor((y - top) / 7) % 2 ? '#ffffff' : '#e63946';
+        const c = Math.floor((y - top) / 7) % 2 ? '#a7b0b8' : '#7d8790';
         r(-2, y, 1, 1, c); r(1, y, 1, 1, c);
         r(((y % 2) + 2) % 2 ? -1 : 0, y, 1, 1, c);                      // zigzag brace
       }
-      r(-3, -1, 6, 1, '#7f8a96');
-      r(0, top - 4, 1, 4, '#9aa4ad'); r(-1, top - 5, 3, 1, '#ff3b3b');
+      r(-3, -1, 6, 1, '#6b747c');
+      r(0, top - 4, 1, 4, '#9aa4ad'); r(-1, top - 5, 3, 1, '#5f6870');
       end();
     },
     balloon(ctx, o) {
@@ -748,16 +748,22 @@ const ART = (() => {
       end();
     },
     espresso(ctx, o, t) {
-      // yellow espresso cup flying off its saucer, spilling a little
+      // yellow espresso cup on its saucer, steaming, spilling a few drops as it flies
       begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 2, 5));
+      const cup = '#f4c430', shade = '#d9a520';
       outlined([
-        [-3, -2, 6, 4, '#f4c430'],                                      // cup
-        [3, -1, 2, 1, '#f4c430'], [4, 0, 1, 1, '#f4c430'],              // handle
-        [-5, 2, 10, 1, '#f7d55c'],                                      // saucer
-      ], '#6b4a10');
-      r(-2, -2, 4, 1, '#4a2c18'); r(-1, -2, 2, 1, '#b8834a');           // espresso + crema
-      r(-3, 0, 6, 1, '#e0a91c');                                        // shading
-      r(-1, -4, 1, 1, '#4a2c18'); r(1, -5, 1, 1, '#4a2c18'); r(3, -4, 1, 1, '#4a2c18'); // drops
+        [-5, -4, 10, 1, '#ffe08a'],                                     // rim
+        [-5, -3, 10, 2, cup], [-4, -1, 8, 2, cup], [-3, 1, 6, 1, cup], [-2, 2, 4, 1, cup], // cup narrowing to its foot
+        [5, -3, 2, 1, cup], [7, -2, 1, 3, cup], [5, 1, 2, 1, cup],      // round handle
+        [-7, 3, 14, 1, '#f7d55c'], [-5, 4, 10, 1, '#e0b83a'],           // saucer
+      ], '#5a3a0a');
+      r(-4, -4, 8, 1, '#4a2c18'); r(-2, -4, 3, 1, '#c08850');           // espresso with crema, seen over the rim
+      r(2, -3, 3, 2, shade); r(2, -1, 2, 2, shade); r(1, 1, 2, 1, shade); // shading
+      r(-4, -3, 1, 2, '#fff2b8');                                       // shine
+      // steam
+      for (const [x, y] of [[-2, -6], [-1, -7], [-2, -8], [1, -6], [2, -7], [1, -8]]) r(x, y, 1, 1, 'rgba(255,255,255,0.85)');
+      // a few drops flying out behind
+      r(5, -6, 1, 1, '#4a2c18'); r(7, -7, 1, 1, '#4a2c18'); r(9, -6, 1, 1, '#4a2c18');
       end();
     },
     hay(ctx, o) {
