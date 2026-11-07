@@ -27,14 +27,12 @@ const STR = {
   chaos: 'Kaaos',
   chaosButton: 'Kaaosmoodi ▸',
   chaosHint: 'Kaikki sekaisin!',
+  chaosRecord: 'Kaaos-ennätys',   // title screen, once a chaos record exists
   newRecord: 'Uusi ennätys!',
 
   victoryTitle: 'Selvisit kotiin!',
-  finalScore: 'Pisteet',
   // Placeholder for the personal message (use \n for new lines)
   personalMessage: 'Hyvää isänpäivää iskä!<3\nt. Kaisla',
-  playAgain: 'Paina välilyöntiä',
-  playAgainTouch: 'Napauta',
 
   comicSkip: 'Ohita',
   comicNext: 'Jatka',

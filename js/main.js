@@ -42,7 +42,8 @@
   };
 
   // ---------- high score ----------
-  const HS_KEY = 'iskanpaiva_highscore';
+  // Only chaos mode keeps points and a record (the story has none)
+  const HS_KEY = 'iskanpaiva_chaos_highscore';
   function loadHigh() {
     try { G.high = parseInt(localStorage.getItem(HS_KEY), 10) || 0; } catch (e) { G.high = 0; }
   }
@@ -93,13 +94,13 @@
     showCard(0);
   }
 
-  // Chaos mode: endless random levels after the sauna (keepScore: continuing from the victory screen)
-  function startChaos(keepScore) {
+  // Chaos mode: endless random levels after the sauna (points start from 0)
+  function startChaos() {
     MUSIC.play('chaos');
     G.chaos = true;
     G.chaosN = 0;
     G.lives = CONFIG.START_LIVES;
-    if (!keepScore) G.score = 0;
+    G.score = 0;
     G.newRecord = false;
     nextChaos();
   }
@@ -166,7 +167,8 @@
   }
 
   function gameOver() {
-    saveHigh();
+    if (G.chaos) saveHigh();
+    else G.newRecord = false;
     setState('gameover');
   }
 
@@ -176,7 +178,6 @@
   }
 
   function victory() {
-    saveHigh();
     setState('victory');
     SOUND.play('victory');
   }
@@ -351,14 +352,14 @@
       case 'gameover':
         if (!fading() && G.stateT > 0.8) {
           if (Input.tap && inRect(Input.tap, gameOverTitleButton())) transition(toTitle);
-          else if (Input.confirm) transition(G.chaos ? () => startChaos(false) : startRun);
+          else if (Input.confirm) transition(G.chaos ? startChaos : startRun);
         }
         break;
       case 'victory':
         if (!fading() && G.stateT > 1.5) {
           // victory: start chaos mode (space / tap / button), or the small button back to the title
           if (Input.tap && inRect(Input.tap, victoryTitleButton())) transition(toTitle);
-          else if (Input.confirm) transition(() => startChaos(true));
+          else if (Input.confirm) transition(startChaos);
         }
         break;
     }
@@ -447,8 +448,10 @@
 
   function drawHUD() {
     const sh = 'rgba(0,0,0,0.55)';
-    FONT.draw(ctx, `${STR.score} ${pad(G.score)}`, 12, 10, { scale: 2, color: '#ffffff', shadow: sh });
-    FONT.draw(ctx, `${STR.highScore} ${pad(Math.max(G.high, G.score))}`, 12, 30, { scale: 1, color: '#ffffff', shadow: sh });
+    if (G.chaos) {   // points and record only in chaos mode
+      FONT.draw(ctx, `${STR.score} ${pad(G.score)}`, 12, 10, { scale: 2, color: '#ffffff', shadow: sh });
+      FONT.draw(ctx, `${STR.highScore} ${pad(Math.max(G.high, G.score))}`, 12, 30, { scale: 1, color: '#ffffff', shadow: sh });
+    }
     const L = G.level;
     FONT.draw(ctx, L.hudLabel || `${STR.level} ${L.index + 1}: ${L.name}`, W / 2, 10, { scale: 2, color: '#ffffff', align: 'center', shadow: sh });
     // progress to the gate
@@ -499,14 +502,17 @@
     if (Math.floor(G.t * 2) % 2 === 0) {
       FONT.draw(ctx, isTouchDevice() ? STR.tapStart : STR.pressStart, 290, 180, { scale: 2, color: '#ffffff', align: 'center', shadow: '#2b2b3b' });
     }
-    FONT.draw(ctx, `${STR.highScore} ${pad(G.high)}`, 290, 214, { scale: 2, color: '#ffd56b', align: 'center', shadow: '#2b2b3b' });
+    if (G.high > 0) FONT.draw(ctx, `${STR.chaosRecord} ${pad(G.high)}`, 290, 214, { scale: 2, color: '#ffd56b', align: 'center', shadow: '#2b2b3b' });
     button(titleComicButton(), STR.rewatchComic);
     // how to play (Finnish), different on phones
     const lines = isTouchDevice() ? STR.controlsTouch : STR.controlsDesktop;
+    // the box grows with the longest line (texts are editable in strings.js)
+    const bw = Math.max(...lines.map((l) => FONT.width(l, 2)), FONT.width(STR.howTo, 2)) + 24;
+    const bx = W - 10 - bw;
     ctx.fillStyle = 'rgba(27,27,47,0.7)';
-    ctx.fillRect(486, 218, 304, 80);
-    FONT.draw(ctx, STR.howTo, 638, 224, { scale: 2, color: '#ffd56b', align: 'center' });
-    lines.forEach((l, i) => FONT.draw(ctx, l, 498, 244 + i * 18, { scale: 2, color: '#ffffff' }));
+    ctx.fillRect(bx, 218, bw, 80);
+    FONT.draw(ctx, STR.howTo, bx + bw / 2, 224, { scale: 2, color: '#ffd56b', align: 'center' });
+    lines.forEach((l, i) => FONT.draw(ctx, l, bx + 12, 244 + i * 18, { scale: 2, color: '#ffffff' }));
   }
 
   function drawCard() {
@@ -552,7 +558,6 @@
     }
     if (f.phase === 'greet' && f.t > 0.3 && f.t < 2.3) drawBubble(ctx, STR.toukoFinale, tx, 110, tx, 196, { center: true });
     if (f.phase === 'greet' && f.t > 2.6 && f.t < 4.4) drawBubble(ctx, STR.lauriFinale, f.lauriX, 110, f.lauriX, 196, { center: true });
-    FONT.draw(ctx, `${STR.score} ${pad(G.score)}`, 12, 10, { scale: 2, color: '#ffffff', shadow: 'rgba(0,0,0,0.55)' });
   }
 
   function drawVictory() {
@@ -560,10 +565,8 @@
     ART.drawSaunaInterior(ctx, G.stateT);
     const sh = '#2b1a0e';
     ctx.fillStyle = 'rgba(40,20,8,0.55)';
-    ctx.fillRect(0, 0, W, 62);
-    FONT.draw(ctx, STR.victoryTitle, W / 2, 10, { scale: 3, color: '#ffd56b', align: 'center', shadow: sh });
-    const rec = G.newRecord ? STR.newRecord : `${STR.highScore} ${pad(G.high)}`;
-    FONT.draw(ctx, `${STR.finalScore} ${pad(G.score)}   ${rec}`, W / 2, 40, { scale: 2, color: '#ffffff', align: 'center', shadow: sh });
+    ctx.fillRect(0, 0, W, 44);
+    FONT.draw(ctx, STR.victoryTitle, W / 2, 12, { scale: 3, color: '#ffd56b', align: 'center', shadow: sh });
     // personal message on a wooden plaque
     const lines = FONT.wrap(STR.personalMessage.toUpperCase(), 17);
     const px = 18, py = 82, pw = 226, ph = lines.length * 22 + 26;
@@ -592,9 +595,11 @@
     ctx.fillStyle = 'rgba(20,20,45,0.72)';
     ctx.fillRect(0, 0, W, H);
     FONT.draw(ctx, STR.gameOver, W / 2, 46, { scale: 6, color: '#e8364f', align: 'center', shadow: '#000' });
-    FONT.draw(ctx, `${STR.score} ${pad(G.score)}`, W / 2, 116, { scale: 3, color: '#ffffff', align: 'center' });
-    const rec = G.newRecord ? STR.newRecord : `${STR.highScore} ${pad(G.high)}`;
-    FONT.draw(ctx, rec, W / 2, 150, { scale: 2, color: G.newRecord ? '#ffd56b' : '#9fb3c8', align: 'center' });
+    if (G.chaos) {   // only chaos mode has points
+      FONT.draw(ctx, `${STR.score} ${pad(G.score)}`, W / 2, 116, { scale: 3, color: '#ffffff', align: 'center' });
+      const rec = G.newRecord ? STR.newRecord : `${STR.highScore} ${pad(G.high)}`;
+      FONT.draw(ctx, rec, W / 2, 150, { scale: 2, color: G.newRecord ? '#ffd56b' : '#9fb3c8', align: 'center' });
+    }
     if (G.stateT > 0.8 && Math.floor(G.t * 2) % 2 === 0) {
       FONT.draw(ctx, STR.tryAgain, W / 2, 196, { scale: 3, color: '#ffffff', align: 'center' });
     }
@@ -714,7 +719,7 @@
     if (s === 'comic') { Comic.start(() => transition(toTitle)); Comic.panel = parseInt(params.get('panel') || '0', 10); Comic.panelT = 5; setState('comic'); }
     if (s === 'finale') { G.score = 2468; startFinale(); }
     if (s === 'victory') { G.score = 2468; victory(); }
-    if (s === 'chaos') startChaos(false);
+    if (s === 'chaos') startChaos();
     if (s === 'gameover') { setupLevel(0); G.score = 321; gameOver(); }
     if (s === 'card') { setupLevel(parseInt(params.get('n') || '0', 10)); G.cardFor = G.levelIndex; setState('card'); }
   }
