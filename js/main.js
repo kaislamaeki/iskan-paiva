@@ -572,6 +572,7 @@
 
   // ---------- start ----------
   ART.init();
+  SOUND.init();
   BG.init();
   Input.init(canvas);
   loadHigh();

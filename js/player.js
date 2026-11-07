@@ -58,7 +58,9 @@ class Player {
       this.y += this.vy * dt;
       if (this.y >= R.groundY) { this.y = R.groundY; this.vy = 0; this.grounded = true; }
     }
+    const wasDucking = this.ducking;
     this.ducking = this.grounded && down;
+    if (inp && this.ducking && !wasDucking) SOUND.play('duck');
     this.pose = !this.grounded ? 'jump' : (this.ducking ? 'duck' : 'run');
     this.frame = Math.floor(this.animT * 10) % 4;
   }
@@ -68,7 +70,7 @@ class Player {
     let target = G.baseY;
     if (inp) {
       if (inp.up) { this.dir = -1; this.holdT = G.hold; SOUND.play('jump'); }
-      if (inp.downPressed) { this.dir = 1; this.holdT = G.hold; }
+      if (inp.downPressed) { if (this.dir !== 1) SOUND.play('duck'); this.dir = 1; this.holdT = G.hold; }
       if (this.dir === -1 && inp.upHeld) this.holdT = G.hold;
       if (this.dir === 1 && inp.down) this.holdT = G.hold;
       this.holdT -= dt;
@@ -106,7 +108,7 @@ class Player {
           this.jumpBuf = 0;
           SOUND.play('jump');
         } else {
-          if (inp.downPressed) { this.dir = 1; this.holdT = S.hold; }
+          if (inp.downPressed) { if (this.dir !== 1) SOUND.play('duck'); this.dir = 1; this.holdT = S.hold; }
           if (this.dir === 1 && inp.down) this.holdT = S.hold;
           this.holdT -= dt;
           if (this.holdT <= 0) this.dir = 0;
