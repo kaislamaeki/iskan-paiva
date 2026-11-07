@@ -1,9 +1,9 @@
-// Background music: a calm, jazzy chiptune generated live with Web Audio.
+// Background music: a light, jazzy chiptune with a catchy hook, generated live with Web Audio.
 // Swung eighths, seventh chords, a walking bass, soft "electric piano" comping,
 // ride cymbal and hi-hat. No audio files needed.
 // It starts after the first tap / key press (browsers require that).
 const MUSIC = (() => {
-  const TEMPO = 96;                   // beats per minute (calm)
+  const TEMPO = 112;                  // beats per minute (relaxed but lively)
   const BEAT = 60 / TEMPO;
   const SWING = 2 / 3;                // the "and" lands 2/3 into the beat (triplet swing)
 
@@ -37,22 +37,24 @@ const MUSIC = (() => {
 
   // Melody: [note, length in eighths]; 'R' = rest. 8 eighths per bar.
   const MELODY = [
-    ['R', 2], ['E4', 1], ['G4', 1], ['B4', 3], ['A4', 1],
-    ['G4', 2], ['E4', 2], ['C5', 3], ['R', 1],
-    ['R', 1], ['D4', 1], ['F4', 1], ['A4', 1], ['C5', 2], ['B4', 1], ['A4', 1],
-    ['G4', 4], ['F4', 1], ['D4', 1], ['B3', 2],
-    ['R', 2], ['E4', 1], ['G4', 1], ['B4', 2], ['D5', 2],
-    ['C#5', 3], ['B4', 1], ['A4', 2], ['G4', 2],
-    ['F4', 2], ['A4', 1], ['C5', 1], ['E5', 3], ['D5', 1],
-    ['D5', 2], ['B4', 2], ['G4', 2], ['R', 2],
-    ['R', 1], ['A4', 1], ['C5', 1], ['E5', 1], ['G5', 2], ['E5', 2],
-    ['G#4', 3], ['G4', 1], ['F4', 2], ['D#4', 2],
-    ['E4', 2], ['G4', 1], ['B4', 1], ['D5', 3], ['C5', 1],
-    ['C#5', 2], ['E5', 2], ['G4', 2], ['F4', 1], ['E4', 1],
-    ['D5', 2], ['C5', 1], ['A4', 1], ['F4', 2], ['A4', 2],
-    ['B4', 1], ['D5', 1], ['F4', 1], ['D4', 1], ['B3', 2], ['G4', 2],
-    ['C5', 3], ['E4', 1], ['G4', 2], ['B4', 2],
-    ['A4', 1], ['G4', 1], ['F4', 1], ['D4', 1], ['B3', 2], ['R', 2],
+    // A: the hook (bars 1-2), an answer (3-4), the hook again (5-6), a run down (7-8)
+    ['E4', 1], ['G4', 1], ['A4', 1], ['C5', 2], ['A4', 1], ['C5', 1], ['D5', 1],
+    ['E5', 3], ['D5', 1], ['C5', 2], ['R', 2],
+    ['F4', 1], ['A4', 1], ['C5', 1], ['D5', 2], ['C5', 1], ['A4', 1], ['F4', 1],
+    ['G4', 3], ['B4', 1], ['D5', 2], ['R', 2],
+    ['E4', 1], ['G4', 1], ['A4', 1], ['C5', 2], ['A4', 1], ['C5', 1], ['D5', 1],
+    ['E5', 3], ['C#5', 1], ['E5', 2], ['R', 2],
+    ['F5', 2], ['E5', 1], ['D5', 1], ['C5', 1], ['A4', 1], ['F4', 2],
+    ['B4', 1], ['D5', 1], ['F5', 1], ['D5', 1], ['G4', 2], ['R', 2],
+    // B: a second little phrase, repeated one step lower (bars 9-12), then back to the hook
+    ['A4', 1], ['C5', 1], ['E5', 2], ['R', 1], ['A4', 1], ['C5', 1], ['E5', 1],
+    ['D#5', 3], ['C5', 1], ['G#4', 2], ['R', 2],
+    ['G4', 1], ['B4', 1], ['D5', 2], ['R', 1], ['G4', 1], ['B4', 1], ['D5', 1],
+    ['C#5', 3], ['E5', 1], ['G5', 2], ['R', 2],
+    ['F5', 1], ['E5', 1], ['D5', 1], ['C5', 1], ['A4', 2], ['D5', 2],
+    ['B4', 1], ['A4', 1], ['G4', 1], ['F4', 1], ['D4', 2], ['G4', 2],
+    ['E4', 1], ['G4', 1], ['A4', 1], ['C5', 2], ['A4', 1], ['C5', 1], ['D5', 1],
+    ['E5', 3], ['D5', 1], ['B4', 2], ['R', 2],
   ];
   const mel = [];  // what starts on each eighth
   for (const [n, len] of MELODY) {
@@ -132,7 +134,7 @@ const MUSIC = (() => {
     const bar = Math.floor(i / 8), e = i % 8, beat = Math.floor(e / 2), off = e % 2 === 1;
     // melody: soft triangle
     const n = mel[i];
-    if (n) voice('triangle', hz(n.m), t, (eighthTime(i + n.len) - eighthTime(i)) * 0.95, 0.22);
+    if (n) voice('triangle', hz(n.m), t, (eighthTime(i + n.len) - eighthTime(i)) * 0.95, 0.25);
     if (!off) {
       // walking bass on every beat
       voice('triangle', hz(bassNote(bar, beat)), t, BEAT * 0.9, 0.32);
