@@ -109,6 +109,7 @@ CONFIG.AUDIO = { music: 0.35, effects: 0.8 };
 const SOUNDS = {
   jump: 'assets/sounds/jump.wav',   // male voice "hop" on every jump / rise / leap
   duck: 'assets/sounds/duck.wav',   // male voice "uhh" when ducking / diving
+  splash: 'assets/sounds/splash.wav', // Lauri diving off the pier at the end of the horse level
   hit: null,
   gate: null,
   gameover: null,

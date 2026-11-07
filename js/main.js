@@ -208,6 +208,11 @@
         if (p.x >= G.gate.x) { p.x = G.gate.x; G.gate.arrived = true; SOUND.play('gate'); }
       } else {
         G.gate.arrivedT += dt;
+        // splash when Lauri's dive off the pier hits the water (same moment as the drawn splash)
+        if (G.gate.key === 'pier' && !G.gate.splashed && G.gate.arrivedT >= 1.9) {
+          G.gate.splashed = true;
+          SOUND.play('splash');
+        }
         // at the pier and the rooftop the gate animation takes over (dive / take-off), elsewhere Lauri fades into the door
         p.alpha = G.gate.key in ART.GATE_ANIM ? 0 : Math.max(0, 1 - G.gate.arrivedT * 2.5);
         // stay at the gate until the player clicks/taps/presses space
