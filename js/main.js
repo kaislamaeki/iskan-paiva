@@ -85,10 +85,28 @@
 
   // ---------- flow ----------
   function startRun() {
+    G.chaos = false;
     G.score = 0;
     G.lives = CONFIG.START_LIVES;
     G.newRecord = false;
     showCard(0);
+  }
+
+  // Chaos mode: endless random levels after the sauna (keepScore: continuing from the victory screen)
+  function startChaos(keepScore) {
+    G.chaos = true;
+    G.chaosN = 0;
+    G.lives = CONFIG.START_LIVES;
+    if (!keepScore) G.score = 0;
+    G.newRecord = false;
+    nextChaos();
+  }
+
+  function nextChaos() {
+    G.chaosN++;
+    useLevel(CHAOS.make(G.chaosN));
+    G.cardFor = 'chaos';
+    setState('card');
   }
 
   function showCard(which) {
@@ -99,7 +117,11 @@
 
   function setupLevel(i) {
     G.levelIndex = i;
-    G.level = LEVELS[i];
+    useLevel(LEVELS[i]);
+  }
+
+  function useLevel(L) {
+    G.level = L;
     G.player = new Player(G.level);
     Obstacles.reset(G.level);
     G.levelStartScore = G.score;
@@ -112,7 +134,8 @@
   }
 
   function nextLevel() {
-    if (G.levelIndex + 1 < LEVELS.length) showCard(G.levelIndex + 1);
+    if (G.chaos) nextChaos();
+    else if (G.levelIndex + 1 < LEVELS.length) showCard(G.levelIndex + 1);
     else showCard('finale');
   }
 
@@ -325,11 +348,15 @@
       case 'gameover':
         if (!fading() && G.stateT > 0.8) {
           if (Input.tap && inRect(Input.tap, gameOverTitleButton())) transition(toTitle);
-          else if (Input.confirm) transition(startRun);
+          else if (Input.confirm) transition(G.chaos ? () => startChaos(false) : startRun);
         }
         break;
       case 'victory':
-        if (!fading() && G.stateT > 1.5 && Input.confirm) transition(toTitle);
+        if (!fading() && G.stateT > 1.5) {
+          // victory: start chaos mode (space / tap / button), or the small button back to the title
+          if (Input.tap && inRect(Input.tap, victoryTitleButton())) transition(toTitle);
+          else if (Input.confirm) transition(() => startChaos(true));
+        }
         break;
     }
   }
@@ -338,6 +365,8 @@
   const inRect = (p, r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
   const titleComicButton = () => ({ x: 14, y: 262, w: 150, h: 26 });
   const gameOverTitleButton = () => ({ x: W / 2 - 60, y: 252, w: 120, h: 26 });
+  const victoryChaosButton = () => ({ x: 14, y: 222, w: 234, h: 32 });
+  const victoryTitleButton = () => ({ x: 14, y: 262, w: 234, h: 26 });
   const soundButton = () => ({ x: 644, y: 8, w: 30, h: 24 });
   const pauseButton = () => ({ x: 608, y: 8, w: 30, h: 24 });
   const pauseButtonVisible = () => isTouchDevice() && G.state === 'play' && G.phase !== 'dying';
@@ -418,7 +447,7 @@
     FONT.draw(ctx, `${STR.score} ${pad(G.score)}`, 12, 10, { scale: 2, color: '#ffffff', shadow: sh });
     FONT.draw(ctx, `${STR.highScore} ${pad(Math.max(G.high, G.score))}`, 12, 30, { scale: 1, color: '#ffffff', shadow: sh });
     const L = G.level;
-    FONT.draw(ctx, `${STR.level} ${L.index + 1}: ${L.name}`, W / 2, 10, { scale: 2, color: '#ffffff', align: 'center', shadow: sh });
+    FONT.draw(ctx, L.hudLabel || `${STR.level} ${L.index + 1}: ${L.name}`, W / 2, 10, { scale: 2, color: '#ffffff', align: 'center', shadow: sh });
     // progress to the gate
     const prog = Math.min(1, (G.score - G.levelStartScore) / L.length);
     const bx = W / 2 - 80, by = 30;
@@ -481,11 +510,13 @@
     ctx.fillStyle = '#1b1b2f';
     ctx.fillRect(0, 0, W, H);
     const fin = G.cardFor === 'finale';
-    const L = fin ? null : LEVELS[G.cardFor];
-    const top = fin ? STR.finaleName : `${STR.level} ${L.index + 1}`;
+    const chaos = G.cardFor === 'chaos';
+    const L = fin ? null : (chaos ? G.level : LEVELS[G.cardFor]);
+    const top = fin ? STR.finaleName : (chaos ? `${STR.chaos} ${G.chaosN}` : `${STR.level} ${L.index + 1}`);
     FONT.draw(ctx, top.toUpperCase(), W / 2, 60, { scale: 3, color: '#ffd56b', align: 'center' });
     if (!fin) {
       FONT.draw(ctx, L.name, W / 2, 100, { scale: L.name.length > 14 ? 4 : 5, color: '#ffffff', align: 'center' });
+      if (chaos) FONT.draw(ctx, STR.chaosHint, W / 2, 146, { scale: 2, color: '#ff7ad9', align: 'center' });
       FONT.draw(ctx, L.hint, W / 2, isTouchDevice() ? 240 : 250, { scale: 2, color: '#9fb3c8', align: 'center' });
       if (isTouchDevice()) FONT.draw(ctx, STR.touchHint, W / 2, 264, { scale: 2, color: '#ffd56b', align: 'center' });
       // preview of Lauri's look for this level
@@ -538,8 +569,18 @@
     ctx.fillStyle = '#e8364f'; ctx.fillRect(px, py, pw, 4);
     lines.forEach((l, i) => FONT.draw(ctx, l, px + pw / 2, py + 18 + i * 22, { scale: 2, color: '#2b2b3b', align: 'center' }));
     ART.blit(ctx, ART.SPR.heart, px + pw - 18, py + ph - 14 + Math.round(Math.sin(G.t * 3) * 2), 2);
-    if (G.stateT > 1.5 && Math.floor(G.t * 2) % 2 === 0) {
-      FONT.draw(ctx, isTouchDevice() ? STR.playAgainTouch : STR.playAgain, px + pw / 2, 280, { scale: 2, color: '#ffffff', align: 'center', shadow: sh });
+    if (G.stateT > 1.5) {
+      // continue into chaos mode (space / tap), or back to the title
+      const c = victoryChaosButton();
+      ctx.fillStyle = 'rgba(27,27,47,0.85)';
+      ctx.fillRect(c.x, c.y, c.w, c.h);
+      const cols = ['#e63946', '#f4a261', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6'];
+      for (let i = 0; i < c.w; i += 6) {
+        ctx.fillStyle = cols[(Math.floor(i / 6) + Math.floor(G.t * 8)) % cols.length];
+        ctx.fillRect(c.x + i, c.y + c.h - 3, 6, 3);
+      }
+      FONT.draw(ctx, STR.chaosButton, c.x + c.w / 2, c.y + 8, { scale: 2, color: Math.floor(G.t * 2) % 2 ? '#ffffff' : '#ffd56b', align: 'center' });
+      button(victoryTitleButton(), STR.toTitle);
     }
   }
 
@@ -670,6 +711,7 @@
     if (s === 'comic') { Comic.start(() => transition(toTitle)); Comic.panel = parseInt(params.get('panel') || '0', 10); Comic.panelT = 5; setState('comic'); }
     if (s === 'finale') { G.score = 2468; startFinale(); }
     if (s === 'victory') { G.score = 2468; victory(); }
+    if (s === 'chaos') startChaos(false);
     if (s === 'gameover') { setupLevel(0); G.score = 321; gameOver(); }
     if (s === 'card') { setupLevel(parseInt(params.get('n') || '0', 10)); G.cardFor = G.levelIndex; setState('card'); }
   }
@@ -747,7 +789,7 @@
       lives = G.lives;
       if (G.state !== startState && (G.state === 'victory' || G.state === 'gameover')) break;
     }
-    document.title = `state=${G.state} level=${G.levelIndex + 1} lives=${G.lives} score=${Math.floor(G.score)} lost=${lostAt.join(',')}`;
+    document.title = `state=${G.state} level=${G.levelIndex + 1} chaos=${G.chaosN || 0} lives=${G.lives} score=${Math.floor(G.score)} lost=${lostAt.join(',')}`;
   }
 
   requestAnimationFrame(frame);

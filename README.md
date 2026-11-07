@@ -12,6 +12,7 @@ Open `index.html` in a browser (Chrome works best).
 - **Down**: hold Arrow Down, S or Shift. On a phone, touch and hold the bottom half (or swipe down).
 - **P / Esc**: pause.
 - **Sound on/off**: the speaker button at the top right, or the **M** key. The game remembers the setting.
+- **Chaos mode**: after the sauna, the victory screen offers "Kaaosmoodi": endless random levels mixing every background, Lauri look and obstacle. Each one ends at a rainbow portal and is a little faster than the last.
 
 ## Deploy to GitHub Pages
 
@@ -82,4 +83,5 @@ Every obstacle has its own image in `assets/obstacles/`, for example `box.png`, 
   - `?scene=comic&panel=2`, `?scene=finale`, `?scene=victory` and `?scene=gameover` open a single screen.
   - `?level=1&bot=1&sim=600` lets a bot play the whole game instantly and writes the result to the page title. This is useful after changing difficulty settings.
   - `?level=5&show=owl,snowhorse` places those obstacles on screen right away, to preview new or replaced obstacle images.
+  - `?scene=chaos` starts chaos mode directly; add `&chaosbg=glide` (or office, horse, swim, ski, home) to force its background.
   - `?export=obstacles` redraws every obstacle from the built-in pixel art so they can be saved again as pngs. Only needed if the code art changes; your replaced pngs are not touched by it.

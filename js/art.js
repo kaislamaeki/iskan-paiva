@@ -974,12 +974,20 @@ const ART = (() => {
     }
   }
 
+  // width / height of an obstacle image (without its outline), 1 if not loaded yet
+  function imageAspect(key) {
+    const im = obstacleImgs[key];
+    return im ? (im.src.width - im.pad * 2) / im.srcH : 1;
+  }
+
   function drawObstacle(ctx, o, t, codeOnly = false) {
     const im = !codeOnly && obstacleImgs[o.type.key];
     if (im) {
       const m = OBSTACLE_IMAGES[o.type.key];
       const img = im.src;
-      const s = m.h / im.srcH;
+      // drawH (chaos mode) resizes an obstacle to fit another level; f scales its offsets too
+      const f = o.type.drawH ? o.type.drawH / m.h : 1;
+      const s = m.h * f / im.srcH;
       const w = img.width * s, h = img.height * s;
       const flying = o.type.kind === 'high' && o.type.key !== 'branch' && o.type.key !== 'snowbranch' && o.type.key !== 'liftchair';
       const b = flying ? Math.round(Math.sin(t * 6 + (o.seed || 0)) * 2) : 0;
@@ -989,8 +997,8 @@ const ART = (() => {
       // crisp when shrunk by a whole factor (pixel art drawn big, e.g. 12 px per pixel)
       ctx.imageSmoothingEnabled = s < 1 && Math.abs(1 / s - Math.round(1 / s)) > 0.01;
       // the original image's bottom edge sits at hitbox bottom + m.bottom (the outline adds pad below it)
-      const y = o.y + o.h + m.bottom - (im.srcH + im.pad) * s;
-      ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx - w / 2 + jx), Math.round(y + b + jy), Math.round(w), Math.round(h));
+      const y = o.y + o.h + m.bottom * f - (im.srcH + im.pad) * s;
+      ctx.drawImage(img, Math.round(o.x + o.w / 2 + m.dx * f - w / 2 + jx), Math.round(y + b + jy), Math.round(w), Math.round(h));
       ctx.imageSmoothingEnabled = false;
       return;
     }
@@ -1355,6 +1363,40 @@ const ART = (() => {
       drawPerson(ctx, 'annamaria', gx + 12 * U, gy, 'wave', t);
       if (g && g.arrived) hearts(ctx, gx + 12 * U, gy - 30 * U - 10, t);
     },
+    portal(ctx, gx, gy, t, g) {
+      // chaos mode exit: a spinning rainbow portal standing on the ground / water
+      const cx = gx, cy = gy - 48, R = 40;
+      const cols = ['#e63946', '#f4a261', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6'];
+      // swirling inside
+      ctx.fillStyle = '#2a1846';
+      for (let y = -R + 6; y <= R - 6; y += 3) {
+        const hw = Math.floor(Math.sqrt(Math.max(0, (R - 6) * (R - 6) - y * y)) / 3) * 3;
+        ctx.fillRect(Math.round(cx - hw), Math.round(cy + y), hw * 2, 3);
+      }
+      for (let i = 0; i < 26; i++) {
+        const a = t * 3 + i * 0.5;
+        const rad = (i / 26) * (R - 10);
+        ctx.fillStyle = i % 2 ? '#b388ff' : '#ff7ad9';
+        ctx.fillRect(Math.round(cx + Math.cos(a) * rad), Math.round(cy + Math.sin(a) * rad), 3, 3);
+      }
+      // rainbow ring (colours run around it)
+      for (let k = 0; k < 72; k++) {
+        const a = (k / 72) * Math.PI * 2;
+        const c = cols[Math.floor(((k / 72) * cols.length + t * 2)) % cols.length];
+        for (let d = 0; d < 8; d += 3) {
+          ctx.fillStyle = c;
+          ctx.fillRect(Math.round(cx + Math.cos(a) * (R - d)) - 1, Math.round(cy + Math.sin(a) * (R - d)) - 1, 3, 3);
+        }
+      }
+      // sparkles
+      ctx.fillStyle = '#ffffff';
+      for (let i = 0; i < 10; i++) {
+        const a = -t * 1.5 + i * 0.63;
+        const rad = R + 8 + Math.sin(t * 4 + i) * 5;
+        if ((Math.floor(t * 8) + i) % 3) ctx.fillRect(Math.round(cx + Math.cos(a) * rad), Math.round(cy + Math.sin(a) * rad), 2, 2);
+      }
+      if (g && g.arrived) hearts(ctx, cx, cy - R - 10, t);
+    },
     backDoor(ctx, gx, gy, t) {
       // The endless bookshelf finally ends: a plain hallway with the back door.
       const x0 = Math.round(gx - 34 * U);
@@ -1594,7 +1636,7 @@ const ART = (() => {
   return {
     U, init() { buildHeads(); buildSprites(); loadFaces(); loadObstacleImages(); },
     begin, end, r, sprite, blit,
-    drawHead, drawPerson, drawLauri, drawObstacle, drawGate, drawSauna, drawSaunaInterior, GATE_ANIM,
+    drawHead, drawPerson, drawLauri, drawObstacle, drawGate, drawSauna, drawSaunaInterior, GATE_ANIM, imageAspect,
     get SPR() { return SPR; },
     PEOPLE,
   };
