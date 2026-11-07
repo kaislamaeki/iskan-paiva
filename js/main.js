@@ -85,6 +85,7 @@
 
   // ---------- flow ----------
   function startRun() {
+    MUSIC.play('main');
     G.chaos = false;
     G.score = 0;
     G.lives = CONFIG.START_LIVES;
@@ -94,6 +95,7 @@
 
   // Chaos mode: endless random levels after the sauna (keepScore: continuing from the victory screen)
   function startChaos(keepScore) {
+    MUSIC.play('chaos');
     G.chaos = true;
     G.chaosN = 0;
     G.lives = CONFIG.START_LIVES;
@@ -180,6 +182,7 @@
   }
 
   function toTitle() {
+    MUSIC.play('main');
     setState('title');
   }
 
