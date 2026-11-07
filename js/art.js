@@ -698,18 +698,6 @@ const ART = (() => {
       for (const x of [-4, -2, 2, 4]) r(x, -1, 1, 1, hoof);
       end();
     },
-    flyingbook(ctx, o, t) {
-      // a book escaped from the endless shelf, flapping like a bird
-      begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 2, 5));
-      outlined([
-        [-7, -4, 3, 2, '#c0392b'], [-5, -3, 3, 2, '#c0392b'], [-3, -2, 3, 2, '#c0392b'],   // left cover
-        [4, -4, 3, 2, '#c0392b'], [2, -3, 3, 2, '#c0392b'], [0, -2, 3, 2, '#c0392b'],      // right cover
-        [-1, -1, 2, 3, '#8e2a20'],                                      // spine
-      ], '#3a1410');
-      r(-6, -3, 2, 1, '#fffaf0'); r(-4, -2, 3, 1, '#fffaf0'); r(1, -2, 3, 1, '#fffaf0'); r(4, -3, 2, 1, '#fffaf0'); // pages
-      r(-6, -4, 1, 1, '#f1c40f'); r(5, -4, 1, 1, '#f1c40f');           // gold corners
-      end();
-    },
     plant(ctx, o) {
       // monstera in a terracotta pot
       begin(ctx, o.x + o.w / 2, o.y + o.h);
@@ -724,6 +712,52 @@ const ART = (() => {
       r(-5, -13, 1, 1, '#d8c8a0'); r(-3, -12, 1, 1, '#d8c8a0');         // monstera holes
       r(3, -14, 1, 1, '#d8c8a0'); r(5, -13, 1, 1, '#d8c8a0'); r(-1, -17, 1, 1, '#d8c8a0');
       r(-4, -3, 8, 1, '#a8552f');                                       // pot band
+      end();
+    },
+    fish(ctx, o) {
+      // a school of perch filling the water from the surface down to the lakebed
+      const cx = o.x + o.w / 2, sy = CONFIG.SWIM.surfaceY;
+      begin(ctx, cx, sy);
+      const school = [[-2, -1], [3, 4], [-4, 8], [2, 12], [-3, 16], [4, 20], [-1, 24], [3, 28]];
+      for (const [x, y] of school) {
+        outlined([
+          [x - 3, y - 1, 6, 3, '#8fa65a'],                              // body
+          [x - 1, y - 2, 3, 1, '#c0602a'],                              // dorsal fin
+          [x + 3, y, 2, 1, '#e67e22'], [x + 4, y - 1, 1, 1, '#e67e22'], [x + 4, y + 1, 1, 1, '#e67e22'], // tail
+        ], '#22301a');
+        r(x - 2, y + 1, 4, 1, '#e8e2b8');                               // belly
+        r(x - 1, y - 1, 1, 2, '#3d4a2a'); r(x + 1, y - 1, 1, 2, '#3d4a2a'); // stripes
+        r(x - 2, y, 1, 1, '#111111');                                   // eye
+      }
+      r(-6, -1, 2, 1, '#ffffff'); r(3, -1, 2, 1, '#ffffff');            // splash at the surface
+      end();
+    },
+    seagull(ctx, o) {
+      // seagull gliding low over the lake, wings spread
+      begin(ctx, o.x + o.w / 2, o.y + o.h);
+      outlined([
+        [-3, -4, 7, 2, '#ffffff'],                                      // body
+        [-6, -5, 3, 2, '#ffffff'],                                      // head
+        [-8, -4, 2, 1, '#f6b93b'],                                      // beak
+        [4, -4, 2, 1, '#e8e8e8'],                                       // tail
+        [-2, -6, 3, 1, '#cfd6dc'], [-4, -8, 3, 2, '#cfd6dc'], [-6, -9, 2, 1, '#2b2b2b'], // far wing
+        [0, -6, 4, 1, '#b8c2ca'], [2, -8, 4, 2, '#b8c2ca'], [5, -9, 3, 1, '#2b2b2b'],    // near wing
+      ], '#5b6670');
+      r(-5, -5, 1, 1, '#111111');                                       // eye
+      r(-8, -4, 1, 1, '#e74c3c');                                       // red spot on the beak
+      end();
+    },
+    espresso(ctx, o, t) {
+      // yellow espresso cup flying off its saucer, spilling a little
+      begin(ctx, o.x + o.w / 2, o.y + o.h / 2 + bob(t, o, 2, 5));
+      outlined([
+        [-3, -2, 6, 4, '#f4c430'],                                      // cup
+        [3, -1, 2, 1, '#f4c430'], [4, 0, 1, 1, '#f4c430'],              // handle
+        [-5, 2, 10, 1, '#f7d55c'],                                      // saucer
+      ], '#6b4a10');
+      r(-2, -2, 4, 1, '#4a2c18'); r(-1, -2, 2, 1, '#b8834a');           // espresso + crema
+      r(-3, 0, 6, 1, '#e0a91c');                                        // shading
+      r(-1, -4, 1, 1, '#4a2c18'); r(1, -5, 1, 1, '#4a2c18'); r(3, -4, 1, 1, '#4a2c18'); // drops
       end();
     },
     hay(ctx, o) {
@@ -779,22 +813,6 @@ const ART = (() => {
     },
 
     // --- swimming (y of these extends to the lake bottom)
-    log(ctx, o, t) {
-      const cx = o.x + o.w / 2, sy = CONFIG.SWIM.surfaceY;
-      begin(ctx, cx, sy + bob(t, o, 0.6, 3));
-      const depth = Math.round((CONFIG.SWIM.bottomY - sy) / U);
-      for (const sx of [-6, -2, 3, 7]) {
-        for (let y = 2; y < depth; y++) {
-          const w = Math.round(Math.sin(y * 0.5 + t * 2 + sx) * 1);
-          r(sx + w, y, 1, 1, y % 3 ? '#4f7f3a' : '#6b9b47');
-        }
-      }
-      r(-9, -2, 18, 4, '#7b5236'); r(-9, -2, 18, 1, '#94673f');
-      r(-10, -2, 2, 4, '#c49a6c'); r(-9, -1, 1, 2, '#8a6a45');
-      r(-3, -1, 4, 1, '#5e3d26'); r(4, 0, 3, 1, '#5e3d26');
-      r(2, -4, 1, 2, '#5e3d26'); r(3, -5, 2, 1, '#6aa84f');
-      end();
-    },
     buoy(ctx, o, t) {
       const cx = o.x + o.w / 2, sy = CONFIG.SWIM.surfaceY;
       const b = bob(t, o, 1, 3);
@@ -856,23 +874,6 @@ const ART = (() => {
       r(-16, -5, 2, 1, '#b5653a'); r(14, -5, 2, 1, '#b5653a');
       end();
     },
-    branch(ctx, o, t) {
-      const cx = o.x + o.w / 2;
-      begin(ctx, cx, 0);
-      // bough from off-screen
-      r(-40, 12, 50, 3, '#6d4c41'); r(-40, 12, 50, 1, '#8d6e63'); r(5, 14, 6, 2, '#6d4c41');
-      // willow strands
-      const bottom = Math.round(CONFIG.SWIM.highBottom / U) + 1;
-      for (let i = 0; i < 9; i++) {
-        const sx = -8 + i * 2;
-        const top = 14 + (i % 3);
-        for (let y = top; y < bottom - (i % 2) * 2; y++) {
-          const sw = Math.round(Math.sin(t * 1.5 + y * 0.12 + i) * (y - top) / 25);
-          r(sx + sw, y, 1, 1, (y + i) % 3 ? '#7fb24a' : '#5c8f34');
-        }
-      }
-      end();
-    },
 
     // --- skiing
     skirock(ctx, o) {
@@ -893,40 +894,6 @@ const ART = (() => {
       r(0, -9, 1, 1, OUT); r(0, -7, 1, 1, OUT);
       r(-3, -18, 6, 2, OUT); r(-4, -16, 8, 1, OUT);
       r(-7, -10, 3, 1, '#6d4c41'); r(4, -10, 3, 1, '#6d4c41');
-      end();
-    },
-    snowbranch(ctx, o, t) {
-      const cx = o.x + o.w / 2;
-      const by = o.y + o.h;
-      begin(ctx, cx, by);
-      const len = Math.round(by / U);
-      // heavy snowy bough bending down from above
-      for (let y = -len; y < -2; y++) {
-        const k = (y + len) / len;
-        const x = Math.round(-20 + Math.sqrt(k) * 20);
-        r(x, y, 3, 1, '#5d4037');
-        if (y % 4 === 0) {
-          r(x - 4, y, 4, 2, '#2f6e40'); r(x + 3, y + 1, 4, 2, '#24573a');
-          r(x - 4, y - 1, 4, 1, '#ffffff'); r(x + 3, y, 4, 1, '#ffffff');
-        }
-      }
-      // needles + snow clumps at the end
-      r(-7, -7, 11, 3, '#2f6e40'); r(-5, -4, 9, 2, '#2f6e40'); r(-3, -2, 6, 2, '#24573a');
-      r(-7, -8, 11, 1, '#ffffff'); r(-5, -5, 3, 1, '#ffffff'); r(1, -4, 3, 1, '#ffffff'); r(-2, -2, 2, 1, '#ffffff');
-      end();
-    },
-    liftchair(ctx, o, t) {
-      const cx = o.x + o.w / 2;
-      const top = 58;
-      const sw = bob(t, o, 1, 2);
-      begin(ctx, cx, o.y + o.h);
-      const rise = Math.round((o.y + o.h - top) / U);
-      r(0 + sw, -rise, 1, rise - 6, '#7f8c8d');
-      r(-1 + sw, -rise, 3, 1, '#555');
-      r(-5 + sw, -7, 10, 1, '#7f8c8d');
-      r(-5 + sw, -6, 1, 4, '#7f8c8d'); r(4 + sw, -6, 1, 4, '#7f8c8d');
-      r(-5 + sw, -2, 10, 2, '#2980b9'); r(-5 + sw, -6, 10, 2, '#3498db');
-      r(-5 + sw, -3, 10, 1, '#7f8c8d');
       end();
     },
     snowball(ctx, o, t) {

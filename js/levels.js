@@ -54,12 +54,12 @@ const LEVELS = [
   {
     id: 'swim', player: 'swim', bg: 'swim', gate: 'iceArch',
     obstacles: [
-      { key: 'log',    kind: 'low',  w: 46 },
+      { key: 'fish',   kind: 'low',  w: 36 },
       { key: 'buoy',   kind: 'low',  w: 18 },
       { key: 'rock',   kind: 'low',  w: 38 },
       { key: 'duck',   kind: 'high', w: 32, h: 24, bottom: 208 },
       { key: 'boat',   kind: 'high', w: 72, h: 62 },
-      { key: 'branch', kind: 'high', w: 40, h: 96 },
+      { key: 'seagull', kind: 'high', w: 34, h: 24, bottom: 208 },
     ],
   },
   {
@@ -67,8 +67,6 @@ const LEVELS = [
     obstacles: [
       { key: 'skirock',    kind: 'low',  w: 28, h: 20 },
       { key: 'snowman',    kind: 'low',  w: 22, h: 33 },
-      { key: 'snowbranch', kind: 'high', w: 34, h: 20 },
-      { key: 'liftchair',  kind: 'high', w: 30, h: 20 },
       { key: 'snowball',   kind: 'high', w: 18, h: 20 },
       { key: 'reindeer',   kind: 'low',  w: 34, h: 30 },
       { key: 'owl',        kind: 'high', w: 34, h: 22 },
@@ -79,7 +77,7 @@ const LEVELS = [
     obstacles: [
       { key: 'books',  kind: 'low',  w: 26, h: 26 },
       { key: 'plant',        kind: 'low',  w: 26, h: 30 },
-      { key: 'flyingbook',   kind: 'high', w: 30, h: 18 },
+      { key: 'espresso',     kind: 'high', w: 24, h: 18 },
       { key: 'yarnball',     kind: 'low',  w: 26, h: 22 },
       { key: 'knittingsock', kind: 'high', w: 22, h: 20 },
     ],

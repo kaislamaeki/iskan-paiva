@@ -274,11 +274,6 @@ const BG = (() => {
           for (let i = 0; i < 30; i++) R(g, rnd() * W, RUN_G + 4 + rnd() * 40, 2, 2, '#ffffff');
         }, 54) },
       ],
-      front(ctx) {
-        // ski lift cable (chairs hang from it)
-        ctx.fillStyle = '#4b5578';
-        ctx.fillRect(0, 57, W, 2);
-      },
     };
   };
 
