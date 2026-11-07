@@ -22,6 +22,12 @@ const STR = {
   gameOver: 'GAME OVER',
   tryAgain: 'Yritä uudelleen',
   toTitle: 'Palaa alkuun',
+
+  // chaos mode (after the sauna): endless random levels
+  chaos: 'Kaaos',
+  chaosButton: 'Kaaosmoodi ▸',
+  chaosHint: 'Kaikki sekaisin!',
+  chaosRecord: 'Kaaos-ennätys',   // title screen, once a chaos record exists
   newRecord: 'Uusi ennätys!',
 
   victoryTitle: 'Selvisit kotiin!',
