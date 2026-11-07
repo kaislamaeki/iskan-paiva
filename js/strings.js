@@ -10,6 +10,13 @@ const STR = {
   highScore: 'Ennätys',
   level: 'Taso',
   paused: 'Tauko',
+  pausedHintKeys: 'Paina P jatkaaksesi',
+  pausedHintTouch: 'Napauta jatkaaksesi',
+
+  // how to play, on the start screen (desktop / phone)
+  howTo: 'Näin pelaat',
+  controlsDesktop: ['Hyppää: ↑ tai välilyönti', 'Kyykisty: ↓ tai Shift', 'Tauko: P'],
+  controlsTouch: ['Hyppää: pyyhkäise ylös', 'Kyykisty: pyyhkäise alas', 'Tauko: ‖-nappi'],
   rotatePhone: 'Käännä puhelin vaakatasoon',
 
   gameOver: 'GAME OVER',

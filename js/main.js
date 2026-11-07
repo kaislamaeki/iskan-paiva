@@ -269,6 +269,13 @@
     if (Input.keys.KeyM || onSoundButton) SOUND.toggle();
     if (onSoundButton) { Input.up = false; Input.confirm = false; Input.downPressed = false; Input.tap = null; }
 
+    // phones: pause button next to the speaker during play (same rule: the tap is used up)
+    const onPauseButton = pauseButtonVisible() && Input.tap && inRect(Input.tap, pauseButton());
+    if (onPauseButton) {
+      G.paused = !G.paused;
+      Input.up = false; Input.confirm = false; Input.downPressed = false; Input.tap = null;
+    }
+
     if (Input.keys.KeyP || Input.keys.Escape) {
       if (G.state === 'play' && G.phase !== 'dying') G.paused = !G.paused;
     }
@@ -332,6 +339,23 @@
   const titleComicButton = () => ({ x: 14, y: 262, w: 150, h: 26 });
   const gameOverTitleButton = () => ({ x: W / 2 - 60, y: 252, w: 120, h: 26 });
   const soundButton = () => ({ x: 644, y: 8, w: 30, h: 24 });
+  const pauseButton = () => ({ x: 608, y: 8, w: 30, h: 24 });
+  const pauseButtonVisible = () => isTouchDevice() && G.state === 'play' && G.phase !== 'dying';
+
+  // phones: pause button (two bars, or a play triangle while paused)
+  function drawPauseButton() {
+    if (!pauseButtonVisible()) return;
+    const b = pauseButton();
+    ctx.fillStyle = 'rgba(27,27,47,0.6)';
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+    ctx.fillStyle = '#ffffff';
+    if (G.paused) {
+      for (let i = 0; i < 7; i++) ctx.fillRect(b.x + 11 + i * 2, b.y + 5 + i, 2, 14 - i * 2);
+    } else {
+      ctx.fillRect(b.x + 9, b.y + 5, 4, 14);
+      ctx.fillRect(b.x + 17, b.y + 5, 4, 14);
+    }
+  }
 
   // pixel speaker icon; red cross when sound is off
   function drawSoundButton() {
@@ -445,6 +469,12 @@
     }
     FONT.draw(ctx, `${STR.highScore} ${pad(G.high)}`, 290, 214, { scale: 2, color: '#ffd56b', align: 'center', shadow: '#2b2b3b' });
     button(titleComicButton(), STR.rewatchComic);
+    // how to play (Finnish), different on phones
+    const lines = isTouchDevice() ? STR.controlsTouch : STR.controlsDesktop;
+    ctx.fillStyle = 'rgba(27,27,47,0.7)';
+    ctx.fillRect(486, 218, 304, 80);
+    FONT.draw(ctx, STR.howTo, 638, 224, { scale: 2, color: '#ffd56b', align: 'center' });
+    lines.forEach((l, i) => FONT.draw(ctx, l, 498, 244 + i * 18, { scale: 2, color: '#ffffff' }));
   }
 
   function drawCard() {
@@ -558,10 +588,12 @@
     if (G.paused) {
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(0, 0, W, H);
-      FONT.draw(ctx, STR.paused, W / 2, 130, { scale: 5, color: '#ffffff', align: 'center' });
+      FONT.draw(ctx, STR.paused, W / 2, 120, { scale: 5, color: '#ffffff', align: 'center' });
+      FONT.draw(ctx, isTouchDevice() ? STR.pausedHintTouch : STR.pausedHintKeys, W / 2, 172, { scale: 2, color: '#ffd56b', align: 'center' });
     }
     drawFade();
     drawSoundButton();
+    drawPauseButton();
     if (portraitBlock()) {
       ctx.fillStyle = '#1b1b2f';
       ctx.fillRect(0, 0, W, H);
