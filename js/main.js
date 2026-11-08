@@ -85,13 +85,16 @@
   }
 
   // ---------- flow ----------
-  function startRun() {
+  // a story run, from level 1 or from a level picked in the menu (0-based)
+  function startRun(fromLevel = 0) {
     MUSIC.play('main');
+    G.startLevel = fromLevel;   // "Yritä uudelleen" starts here again
     G.chaos = false;
     G.score = 0;
     G.lives = CONFIG.START_LIVES;
     G.newRecord = false;
-    showCard(0);
+    G.comicSeen = true;
+    showCard(fromLevel);
   }
 
   // Chaos mode: endless random levels after the sauna (points start from 0)
@@ -317,7 +320,9 @@
         if (fading() || G.stateT < 0.3) break;
         const b = titleComicButton();
         const onButton = Input.tap && inRect(Input.tap, b);
-        if (onButton || Input.keys.KeyC) {
+        if ((Input.tap && inRect(Input.tap, titleMenuButton())) || Input.keys.KeyV) {
+          transition(() => setState('menu'));
+        } else if (onButton || Input.keys.KeyC) {
           transition(() => { Comic.start(() => transition(toTitle)); G.comicSeen = true; setState('comic'); });
         } else if (Input.confirm) {
           if (!G.comicSeen) {
@@ -330,6 +335,17 @@
             transition(startRun);
           }
         }
+        break;
+      }
+      case 'menu': {
+        // level select: click/tap a level (or press 1-6), Esc / Takaisin goes back
+        if (fading() || G.stateT < 0.3) break;
+        let pick = -1;
+        LEVELS.forEach((L, i) => {
+          if ((Input.tap && inRect(Input.tap, menuLevelButton(i))) || Input.keys['Digit' + (i + 1)] || Input.keys['Numpad' + (i + 1)]) pick = i;
+        });
+        if (pick >= 0) transition(() => startRun(pick));
+        else if ((Input.tap && inRect(Input.tap, menuBackButton())) || Input.keys.Escape || Input.keys.Backspace) transition(toTitle);
         break;
       }
       case 'comic':
@@ -352,7 +368,7 @@
       case 'gameover':
         if (!fading() && G.stateT > 0.8) {
           if (Input.tap && inRect(Input.tap, gameOverTitleButton())) transition(toTitle);
-          else if (Input.confirm) transition(G.chaos ? startChaos : startRun);
+          else if (Input.confirm) transition(G.chaos ? startChaos : () => startRun(G.startLevel || 0));
         }
         break;
       case 'victory':
@@ -368,6 +384,10 @@
   // ---------- UI helpers ----------
   const inRect = (p, r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
   const titleComicButton = () => ({ x: 14, y: 262, w: 150, h: 26 });
+  const titleMenuButton = () => ({ x: 172, y: 262, w: 120, h: 26 });
+  // level select: 2 columns x 3 rows
+  const menuLevelButton = (i) => ({ x: 90 + (i % 2) * 320, y: 78 + Math.floor(i / 2) * 52, w: 300, h: 40 });
+  const menuBackButton = () => ({ x: W / 2 - 80, y: 248, w: 160, h: 28 });
   const gameOverTitleButton = () => ({ x: W / 2 - 60, y: 252, w: 120, h: 26 });
   const victoryChaosButton = () => ({ x: 14, y: 222, w: 234, h: 32 });
   const victoryTitleButton = () => ({ x: 14, y: 262, w: 234, h: 26 });
@@ -504,6 +524,7 @@
     }
     if (G.high > 0) FONT.draw(ctx, `${STR.chaosRecord} ${pad(G.high)}`, 290, 214, { scale: 2, color: '#ffd56b', align: 'center', shadow: '#2b2b3b' });
     button(titleComicButton(), STR.rewatchComic);
+    button(titleMenuButton(), STR.menu);
     // how to play (Finnish), different on phones
     const lines = isTouchDevice() ? STR.controlsTouch : STR.controlsDesktop;
     // the box grows with the longest line (texts are editable in strings.js)
@@ -513,6 +534,27 @@
     ctx.fillRect(bx, 218, bw, 80);
     FONT.draw(ctx, STR.howTo, bx + bw / 2, 224, { scale: 2, color: '#ffd56b', align: 'center' });
     lines.forEach((l, i) => FONT.draw(ctx, l, bx + 12, 244 + i * 18, { scale: 2, color: '#ffffff' }));
+  }
+
+  // level select: the title background dimmed, one button per level
+  function drawMenu() {
+    BG.draw(ctx, 'glide', G.t * 40, G.t);
+    ctx.fillStyle = 'rgba(20,20,45,0.72)';
+    ctx.fillRect(0, 0, W, H);
+    FONT.draw(ctx, STR.menu, W / 2, 18, { scale: 4, color: '#ffd56b', align: 'center', shadow: '#2b2b3b' });
+    FONT.draw(ctx, STR.menuHint, W / 2, 52, { scale: 2, color: '#ffffff', align: 'center' });
+    const accents = ['#9aa5b1', '#7fb8ef', '#6fb04f', '#3a7fb3', '#c7d7ee', '#c48a52'];
+    LEVELS.forEach((L, i) => {
+      const b = menuLevelButton(i);
+      ctx.fillStyle = 'rgba(27,27,47,0.9)';
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.fillStyle = accents[i];
+      ctx.fillRect(b.x, b.y, 8, b.h);
+      ctx.fillRect(b.x, b.y + b.h - 3, b.w, 3);
+      FONT.draw(ctx, String(i + 1), b.x + 26, b.y + 13, { scale: 2, color: '#ffd56b', align: 'center' });
+      FONT.draw(ctx, L.name, b.x + 46, b.y + 13, { scale: 2, color: '#ffffff' });
+    });
+    button(menuBackButton(), STR.back);
   }
 
   function drawCard() {
@@ -626,6 +668,7 @@
     if (G.shake > 0) ctx.translate(Math.round((Math.random() - 0.5) * 6), Math.round((Math.random() - 0.5) * 6));
     switch (G.state) {
       case 'title': drawTitle(); break;
+      case 'menu': drawMenu(); break;
       case 'comic': Comic.draw(ctx, G.t); break;
       case 'card': drawCard(); break;
       case 'play': drawWorld(); drawHUD(); break;

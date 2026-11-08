@@ -6,6 +6,9 @@ const STR = {
   pressStart: 'Paina välilyöntiä aloittaaksesi',
   tapStart: 'Napauta aloittaaksesi',
   rewatchComic: 'Katso intro',
+  menu: 'Valikko',                        // start screen button + level select title
+  menuHint: 'Valitse taso, josta aloitat',
+  back: 'Takaisin',
   score: 'Pisteet',
   highScore: 'Ennätys',
   level: 'Taso',
