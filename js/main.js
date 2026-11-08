@@ -218,7 +218,7 @@
       G.scroll += G.speed * dt;
       G.score += G.speed * dt / CONFIG.PX_PER_POINT;
       p.update(dt, Input, G.speed);
-      Obstacles.heartsAllowed = G.lives < CONFIG.START_LIVES;   // hearts only after a lost life
+      Obstacles.heartsAllowed = !G.chaos && G.lives < CONFIG.START_LIVES;   // story only, after a lost life
       Obstacles.update(dt, G.speed, G.phase === 'run', L);
       if (G.gate) {
         G.gate.x -= G.speed * dt;

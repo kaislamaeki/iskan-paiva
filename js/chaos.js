@@ -16,6 +16,7 @@ const CHAOS = (() => {
   };
 
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  let lastBg = null;   // background of the previous chaos level
   const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -39,7 +40,10 @@ const CHAOS = (() => {
   function make(n) {
     // dev: ?chaosbg=glide forces a background (to preview)
     const forced = CONFIG.DEV && new URLSearchParams(location.search).get('chaosbg');
-    const bg = BGS.includes(forced) ? forced : pick(BGS);
+    // never the same background twice in a row (a new chaos run, n = 1, may start anywhere)
+    if (n === 1) lastBg = null;
+    const bg = BGS.includes(forced) ? forced : pick(BGS.filter((b) => b !== lastBg));
+    lastBg = bg;
     const src = LEVELS.find((L) => L.bg === bg);
     const mode = src.mode;
     const all = LEVELS.flatMap((L) => L.obstacles);
