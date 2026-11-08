@@ -974,6 +974,21 @@ const ART = (() => {
     }
   }
 
+  // floating heart pickup: bobs, glows softly, sparkles
+  function drawHeartPickup(ctx, h, t) {
+    const cx = h.x + h.w / 2, cy = h.y + h.h / 2 + Math.round(Math.sin(t * 4 + h.seed) * 3);
+    const pulse = 0.25 + 0.15 * Math.sin(t * 6 + h.seed);
+    ctx.fillStyle = `rgba(255,120,150,${pulse})`;
+    ctx.fillRect(Math.round(cx - 15), Math.round(cy - 13), 30, 26);
+    ctx.fillRect(Math.round(cx - 18), Math.round(cy - 9), 36, 18);
+    blit(ctx, SPR.heart, cx - 10.5, cy - 9, 3);
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 3; i++) {
+      const a = t * 2.5 + i * 2.1 + h.seed;
+      if ((Math.floor(t * 6) + i) % 2) ctx.fillRect(Math.round(cx + Math.cos(a) * 19), Math.round(cy + Math.sin(a) * 15), 2, 2);
+    }
+  }
+
   // width / height of an obstacle image (without its outline), 1 if not loaded yet
   function imageAspect(key) {
     const im = obstacleImgs[key];
@@ -1636,7 +1651,7 @@ const ART = (() => {
   return {
     U, init() { buildHeads(); buildSprites(); loadFaces(); loadObstacleImages(); },
     begin, end, r, sprite, blit,
-    drawHead, drawPerson, drawLauri, drawObstacle, drawGate, drawSauna, drawSaunaInterior, GATE_ANIM, imageAspect,
+    drawHead, drawPerson, drawLauri, drawObstacle, drawGate, drawSauna, drawSaunaInterior, GATE_ANIM, imageAspect, drawHeartPickup,
     get SPR() { return SPR; },
     PEOPLE,
   };

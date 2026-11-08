@@ -10,6 +10,14 @@ const CONFIG = {
 
   START_LIVES: 3,
   INVINCIBLE_TIME: 1.5,     // seconds of blinking after a hit
+
+  // Floating hearts give a lost life back (jump into one). Only after losing a life, and rarely.
+  HEART: {
+    cooldown: 25,            // at least this many seconds between hearts (also from level start)
+    chance: 0.12,            // after the cooldown, chance per obstacle that a heart follows it
+    after: 0.55,             // the heart floats this many seconds behind the obstacle
+    extraGap: 0.9,           // extra seconds of room before the next obstacle
+  },
   CLEAR_AHEAD: 280,         // obstacles closer than this (px) are removed after a hit
 
   LEVEL_LENGTH: 400,        // points needed per level (a level can override with `length`)

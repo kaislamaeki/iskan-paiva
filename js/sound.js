@@ -60,6 +60,24 @@ const SOUND = {
     });
   },
 
+  // short retro "bling" (two rising notes), e.g. for collecting a heart
+  chime() {
+    if (this.muted || !this.ctx || this.ctx.state !== 'running') return;
+    const t = this.ctx.currentTime;
+    [[988, 0], [1480, 0.08]].forEach(([f, d]) => {
+      const o = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      o.type = 'square';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t + d);
+      g.gain.linearRampToValueAtTime(0.12 * CONFIG.AUDIO.effects, t + d + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.18);
+      o.connect(g).connect(this.master);
+      o.start(t + d);
+      o.stop(t + d + 0.2);
+    });
+  },
+
   toggle() {
     this.muted = !this.muted;
     if (this.master) this.master.gain.value = this.muted ? 0 : 1;

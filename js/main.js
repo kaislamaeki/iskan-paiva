@@ -19,6 +19,7 @@
     score: 0,
     high: 0,
     newRecord: false,
+    fx: [],           // little floating '+1 ♥' effects
     lives: CONFIG.START_LIVES,
     levelIndex: 0,
     level: null,
@@ -217,6 +218,7 @@
       G.scroll += G.speed * dt;
       G.score += G.speed * dt / CONFIG.PX_PER_POINT;
       p.update(dt, Input, G.speed);
+      Obstacles.heartsAllowed = G.lives < CONFIG.START_LIVES;   // hearts only after a lost life
       Obstacles.update(dt, G.speed, G.phase === 'run', L);
       if (G.gate) {
         G.gate.x -= G.speed * dt;
@@ -229,6 +231,12 @@
       if (G.invT <= 0 && !G.god) {
         const o = Obstacles.collide(p.hitbox());
         if (o) { G.lastHit = o.type.key; hit(); }
+      }
+      // jumped into a floating heart: one life back
+      if (Obstacles.collectHeart(p.hitbox())) {
+        G.lives = Math.min(CONFIG.START_LIVES, G.lives + 1);
+        SOUND.chime();
+        G.fx.push({ x: p.x, y: p.hitbox().y, t: 0 });
       }
     } else if (G.phase === 'enter') {
       if (!p.auto) p.auto = { y: autoY(L.mode) };
@@ -250,6 +258,8 @@
       }
     }
     G.invT -= dt;
+    for (const f of G.fx) f.t += dt;
+    G.fx = G.fx.filter((f) => f.t < 1);
     G.shake = Math.max(G.shake - dt, 0);
   }
 
@@ -456,6 +466,11 @@
     Obstacles.draw(ctx, G.t);
     const blink = G.invT > 0 && Math.floor(G.invT * 12) % 2 === 0;
     G.player.draw(ctx, G.t, blink);
+    for (const f of G.fx) {   // '+1 ♥' rising from Lauri after collecting a heart
+      ctx.globalAlpha = 1 - f.t;
+      FONT.draw(ctx, '+1 ♥', f.x, f.y - 10 - f.t * 30, { scale: 2, color: '#ff7a9c', align: 'center', shadow: '#2b2b3b' });
+      ctx.globalAlpha = 1;
+    }
     // the lake ends at the ice arch, beyond it is snow
     const waterEnd = G.gate && G.gate.key === 'iceArch' ? Math.max(0, G.gate.x - 14 * ART.U) : W;
     BG.drawOverlay(ctx, L.bg, G.scroll, G.t, waterEnd);

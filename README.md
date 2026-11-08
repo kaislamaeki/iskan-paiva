@@ -12,6 +12,7 @@ Open `index.html` in a browser (Chrome works best).
 - **Down**: hold Arrow Down, S or Shift. On a phone, touch and hold the bottom half (or swipe down).
 - **P / Esc**: pause.
 - **Sound on/off**: the speaker button at the top right, or the **M** key. The game remembers the setting.
+- **Floating hearts**: after losing a life, a glowing heart sometimes floats in the air. Jump (or rise / leap) into it to get the life back. It is rare on purpose; the settings are in `CONFIG.HEART` in `js/config.js`.
 - **Valikko (menu)**: the button on the start screen (or the **V** key) lists all six levels. Pick one (click, tap or number keys 1-6) to start a run from that level. "Yritä uudelleen" after a game over restarts from that same level. The menu also has a "Kaaosmoodi" button (or **7** / **K**) to start chaos mode directly.
 - **Chaos mode**: after the sauna, the victory screen offers "Kaaosmoodi": endless random levels mixing every background, Lauri look and obstacle. Each one ends at a rainbow portal and is a little faster than the last.
 
