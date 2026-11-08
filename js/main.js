@@ -345,6 +345,7 @@
           if ((Input.tap && inRect(Input.tap, menuLevelButton(i))) || Input.keys['Digit' + (i + 1)] || Input.keys['Numpad' + (i + 1)]) pick = i;
         });
         if (pick >= 0) transition(() => startRun(pick));
+        else if ((Input.tap && inRect(Input.tap, menuChaosButton())) || Input.keys.Digit7 || Input.keys.Numpad7 || Input.keys.KeyK) transition(startChaos);
         else if ((Input.tap && inRect(Input.tap, menuBackButton())) || Input.keys.Escape || Input.keys.Backspace) transition(toTitle);
         break;
       }
@@ -386,8 +387,9 @@
   const titleComicButton = () => ({ x: 14, y: 262, w: 150, h: 26 });
   const titleMenuButton = () => ({ x: 172, y: 262, w: 120, h: 26 });
   // level select: 2 columns x 3 rows
-  const menuLevelButton = (i) => ({ x: 90 + (i % 2) * 320, y: 78 + Math.floor(i / 2) * 52, w: 300, h: 40 });
-  const menuBackButton = () => ({ x: W / 2 - 80, y: 248, w: 160, h: 28 });
+  const menuLevelButton = (i) => ({ x: 90 + (i % 2) * 320, y: 68 + Math.floor(i / 2) * 46, w: 300, h: 38 });
+  const menuChaosButton = () => ({ x: 90, y: 208, w: 620, h: 34 });
+  const menuBackButton = () => ({ x: W / 2 - 80, y: 258, w: 160, h: 28 });
   const gameOverTitleButton = () => ({ x: W / 2 - 60, y: 252, w: 120, h: 26 });
   const victoryChaosButton = () => ({ x: 14, y: 222, w: 234, h: 32 });
   const victoryTitleButton = () => ({ x: 14, y: 262, w: 234, h: 26 });
@@ -542,7 +544,7 @@
     ctx.fillStyle = 'rgba(20,20,45,0.72)';
     ctx.fillRect(0, 0, W, H);
     FONT.draw(ctx, STR.menu, W / 2, 18, { scale: 4, color: '#ffd56b', align: 'center', shadow: '#2b2b3b' });
-    FONT.draw(ctx, STR.menuHint, W / 2, 52, { scale: 2, color: '#ffffff', align: 'center' });
+    FONT.draw(ctx, STR.menuHint, W / 2, 48, { scale: 2, color: '#ffffff', align: 'center' });
     const accents = ['#9aa5b1', '#7fb8ef', '#6fb04f', '#3a7fb3', '#c7d7ee', '#c48a52'];
     LEVELS.forEach((L, i) => {
       const b = menuLevelButton(i);
@@ -551,9 +553,20 @@
       ctx.fillStyle = accents[i];
       ctx.fillRect(b.x, b.y, 8, b.h);
       ctx.fillRect(b.x, b.y + b.h - 3, b.w, 3);
-      FONT.draw(ctx, String(i + 1), b.x + 26, b.y + 13, { scale: 2, color: '#ffd56b', align: 'center' });
-      FONT.draw(ctx, L.name, b.x + 46, b.y + 13, { scale: 2, color: '#ffffff' });
+      FONT.draw(ctx, String(i + 1), b.x + 26, b.y + 12, { scale: 2, color: '#ffd56b', align: 'center' });
+      FONT.draw(ctx, L.name, b.x + 46, b.y + 12, { scale: 2, color: '#ffffff' });
     });
+    // chaos mode, with a running rainbow edge like on the victory screen
+    const c = menuChaosButton();
+    ctx.fillStyle = 'rgba(27,27,47,0.9)';
+    ctx.fillRect(c.x, c.y, c.w, c.h);
+    const cols = ['#e63946', '#f4a261', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6'];
+    for (let i = 0; i < c.w; i += 6) {
+      ctx.fillStyle = cols[(Math.floor(i / 6) + Math.floor(G.t * 8)) % cols.length];
+      ctx.fillRect(c.x + i, c.y + c.h - 3, 6, 3);
+    }
+    FONT.draw(ctx, '7', c.x + 26, c.y + 10, { scale: 2, color: '#ffd56b', align: 'center' });
+    FONT.draw(ctx, STR.chaosButton, c.x + c.w / 2, c.y + 10, { scale: 2, color: '#ff7ad9', align: 'center' });
     button(menuBackButton(), STR.back);
   }
 
